@@ -1,0 +1,20 @@
+diff -urN a/servers/linux-outloud/Makefile b/servers/linux-outloud/Makefile
+--- a/servers/linux-outloud/Makefile	2016-04-21 02:54:59.000000000 +0200
++++ b/servers/linux-outloud/Makefile	2016-05-05 18:39:23.331970634 +0200
+@@ -8,14 +8,14 @@
+ TCL_VERSION=8.6
+ TCL_INCLUDE=/usr/include/tcl$(TCL_VERSION)
+ #CFLAGS+= -g    -O2 -fPIC  -DPIC  -pedantic -ansi -Wall  -Wno-long-long -I$(TCL_INCLUDE)
+-CFLAGS+= -m32 -g    -O2 -fPIC  -DPIC  -pedantic -ansi -Wall  -Wno-long-long -I$(TCL_INCLUDE)
++CFLAGS+= -g    -O2 -fPIC  -DPIC  -pedantic -ansi -Wall  -Wno-long-long -I$(TCL_INCLUDE)
+ CXXFLAGS+= $(CFLAGS)
+ LIBS= -ltcl$(TCL_VERSION) -lasound -ldl    
+ 
+ all:   atcleci.so
+ 
+ atcleci.so: langswitch.o atcleci.o
+-	$(CXX) $(LDFLAGS) -m32 -shared -o $@ langswitch.o atcleci.o $(LIBS)
++	$(CXX) $(LDFLAGS) -shared -o $@ langswitch.o atcleci.o $(LIBS)
+ 
+ clean:
+ 	rm -f *.so *.o 

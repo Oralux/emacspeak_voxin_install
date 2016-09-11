@@ -1,0 +1,149 @@
+Source: http://soft.oralux.net/emacspeak/emacspeak_voxin_install
+
+*------------------------------------------------------------
+Files: *
+Copyright: 2016 Gilles Casse
+License: LGPL-2.1+
+ .
+ This is free software; you can redistribute it and/or modify it under the
+ terms of the GNU Leser General Public License as published by the Free
+ Software Foundation; either version 2.1, or (at your option) any later
+ version.
+ .
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ General Public License for more details.
+ .
+ On Debian systems, you can find the GNU Lesser General Public License
+ version 2.1 in the file /usr/share/common-licenses/LGPL-2.1.
+
+*------------------------------------------------------------
+Files: src/api/eci.h
+Upstream-Name: ibmtts-sdk
+Source: http://sourceforge.net/projects/ibmtts-sdk
+Copyright: 2005-2006 IBM Corp. All rights reserved.
+License: other
+ .
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ .
+    * Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.  *
+    Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+    * Neither the name of IBM Corp. nor the names of its
+    contributors may be used to endorse or promote products derived from
+    this software without specific prior written permission.
+ .
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+ TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+*------------------------------------------------------------
+Files: in src/test[1-4].c, quote from "Les Miserables", by Victor Hugo
+Upstream-Name: pg135.txt
+Source: http://www.gutenberg.org/cache/epub/135/pg135.txt
+License: other
+The Project Gutenberg EBook of Les Miserables, by Victor Hugo
+
+This eBook is for the use of anyone anywhere at no cost and with
+almost no restrictions whatsoever.  You may copy it, give it away or
+re-use it under the terms of the Project Gutenberg License included
+with this eBook or online at www.gutenberg.org
+
+Translator: Isabel F. Hapgood
+Release Date: June 22, 2008 [EBook #135]
+Last Updated: October 30, 2009
+
+
+*------------------------------------------------------------
+Files: in src/test4.c, quote from "Les rêveries du promeneur solitaire", by Jean-Jacques Rousseau
+Upstream-Name: reveries3
+Source: http://abu.cnam.fr/cgi-bin/donner_unformated?reveries3
+License: other
+The Project Gutenberg EBook of Les Miserables, by Victor Hugo
+
+License ABU
+-=-=-=-=-=-
+Version 1.1, Aout 1999
+
+Copyright (C) 1999 Association de Bibliophiles Universels
+   http://abu.cnam.fr/
+   abu@cnam.fr
+
+La base de textes de l'Association des Bibliophiles Universels (ABU)
+est une oeuvre de compilation, elle peut être copiée, diffusée et
+modifiée dans les conditions suivantes :
+
+1.  Toute copie à des fins privées, à des fins d'illustration de l'enseignement
+    ou de recherche scientifique est autorisée.
+
+2.  Toute diffusion ou inclusion dans une autre oeuvre doit
+
+     a) soit inclure la presente licence s'appliquant a l'ensemble de la
+        diffusion ou de l'oeuvre dérivee.
+
+     b) soit permettre aux bénéficiaires de cette diffusion ou de cette
+        oeuvre dérivée d'en extraire facilement et gratuitement une version
+        numérisée de chaque texte inclu, muni de la présente licence.  Cette
+        possibilité doit être mentionnée explicitement et de façon claire,
+        ainsi que le fait que la présente notice s'applique aux documents
+        extraits.
+
+     c) permettre aux bénéficiaires de cette diffusion ou de cette
+        oeuvre dérivée d'en extraire facilement et gratuitement la version
+        numérisée originale, munie le cas échéant des améliorations visées au
+        paragraphe 6, si elles sont présentent dans la diffusion ou la nouvelle
+        oeuvre. Cette possibilité doit être mentionnée explicitement et de
+        façon claire, ainsi que le fait que la présente notice s'applique aux
+        documents extraits.
+
+   Dans tous les autres cas, la présente licence sera réputée s'appliquer
+   à l'ensemble de la diffusion ou de l'oeuvre dérivée.
+
+
+3. L'en-tête qui accompagne chaque fichier doit être intégralement 
+   conservée au sein de la copie.
+
+4. La mention du producteur original doit être conservée, ainsi
+   que celle des contributeurs ultérieurs.
+
+5. Toute modification ultérieure, par correction d'erreurs,
+   additions de variantes, mise en forme dans un autre format, ou autre,
+   doit être indiquée.  L'indication des diverses contributions devra être
+   aussi précise que possible, et datée.
+
+6. Ce copyright s'applique obligatoirement à toute amélioration
+   par simple correction d'erreurs ou d'oublis mineurs (orthographe,
+   phrase manquante, ...), c'est-à-dire ne correspondant pas à
+   l'adjonction d'une autre variante connue du texte, qui devra donc
+   comporter la présente notice.
+
+*------------------------------------------------------------
+Files: in src/test4.c, quote from "Also Sprach Zarathustra", by Friedrich Wilhelm Nietzsche
+Upstream-Name: pg7205.txt
+Source: http://www.gutenberg.org/cache/epub/7205/pg7205.txt
+License: other
+Project Gutenberg's Also Sprach Zarathustra, by Friedrich Wilhelm Nietzsche
+
+This eBook is for the use of anyone anywhere at no cost and with
+almost no restrictions whatsoever.  You may copy it, give it away or
+re-use it under the terms of the Project Gutenberg License included
+with this eBook or online at www.gutenberg.org
+
+Posting Date: August 5, 2011 [EBook #7205]
+Release Date: January, 2005
+[This file was first posted on March 26, 2003]
+[Last updated: December 21, 2014]

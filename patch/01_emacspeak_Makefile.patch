@@ -1,0 +1,11 @@
+diff -urN emacspeak-44.0.orig/Makefile emacspeak-44.0/Makefile
+--- emacspeak-44.0.orig/Makefile	2016-05-05 19:13:25.362164193 +0200
++++ emacspeak-44.0/Makefile	2016-05-05 19:11:46.016500661 +0200
+@@ -191,6 +191,7 @@
+ 	cd lisp; $(MAKE)
+ 	touch   $(ID)
+ 	chmod 644 $(ID)
++	cd servers/linux-outloud; $(MAKE)
+ 	@echo "Now check installation of  the speech server. "
+ 	@echo "See Makefile for instructions."
+ 	@echo "See the NEWS file for a  summary of new features --control e cap n in Emacs"
