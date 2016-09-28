@@ -35,7 +35,7 @@ check_distro()
 
 # arch linux based commands
 arch_check_emacs() {
-    pacman -Q emacs &> /dev/null    
+    (pacman -Q emacs || pacman -Q emacs-nox) &> /dev/null
 }
 
 arch_check_libvoxin() {
@@ -56,7 +56,7 @@ arch_install_dep() {
 
 # debian based specific commands
 debian_check_emacs() {
-    dpkg -l emacs &> /dev/null    
+    (dpkg -l emacs || dpkg -l emacs-nox) &> /dev/null    
 }
 
 debian_check_libvoxin() {

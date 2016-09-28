@@ -30,6 +30,7 @@ echo "initialization; please wait... "
 $install_dep
 
 echo "downloading emacspeak $PV... "
+mkdir -p $workDir
 cd $workDir
 if [ ! -e "emacspeak-${PV}.tar.bz2" ]; then
     wget $URL &>> $LOG
