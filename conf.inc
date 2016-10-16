@@ -60,7 +60,7 @@ debian_check_emacs() {
 }
 
 debian_check_libvoxin() {
-    dpkg -l libvoxin &> /dev/null    
+    dpkg -l "libvoxin*" &> /dev/null    
 }
 
 debian_install_dep() {
