@@ -1,5 +1,5 @@
 This installer builds emacspeak 44.0 and its outloud speech server on 32 or 64 bits machines (x86, x86_64) 
-Emacs (>=24) and voxin (>=1.00) must be installed before running this script.
+Emacs (>=24) and voxin (<1.00) must be installed before running this script.
 
 The proposed instruction to run emacspeak will be displayed at the end of the script; you may want to copy 
 them in your .bashrc file.

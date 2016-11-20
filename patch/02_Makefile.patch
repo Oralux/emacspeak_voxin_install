@@ -1,0 +1,20 @@
+diff -urN a/Makefile b/Makefile
+--- a/Makefile	2016-04-27 17:34:58.000000000 +0200
++++ b/Makefile	2016-11-20 12:51:42.503201000 +0100
+@@ -164,7 +164,7 @@
+ servers/dtk-soft \
+ servers/espeak \
+ servers/mac \
+-servers/outloud  servers/ssh-outloud servers/32-outloud \
++servers/outloud  servers/ssh-outloud servers/32-outloud servers/outloud.common\
+ servers/tts-lib.tcl \
+ servers/cloud* servers/log* servers/speech-server
+ PHANTOM=phantom/*.js
+@@ -191,6 +191,7 @@
+ 	cd lisp; $(MAKE)
+ 	touch   $(ID)
+ 	chmod 644 $(ID)
++	cd servers/linux-outloud; $(MAKE)
+ 	@echo "Now check installation of  the speech server. "
+ 	@echo "See Makefile for instructions."
+ 	@echo "See the NEWS file for a  summary of new features --control e cap n in Emacs"

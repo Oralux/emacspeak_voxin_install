@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -vx
 # 2016, Gilles Casse <gcasse@oralux.org>
 #
 
@@ -8,7 +8,7 @@ check_distro
 
 $check_libvoxin
 if [ "$?" != "0" ]; then 
-    echo "install Voxin >= 1.00 before running this script."
+    echo "install Voxin < 1.00 before running this script."
     exit 0
 fi
 
@@ -43,7 +43,7 @@ fi
 tar -jxf emacspeak-${PV}.tar.bz2
 cd emacspeak-${PV}
 
-for i in $(ls $patchDir/*); do
+for i in $(ls $patchDir/*.patch); do
     patch -p1 < $i
 done
 
@@ -59,9 +59,11 @@ make prefix=$installDir install &>> $LOG
 
 EMACSPEAK_DIR=$installDir/share/emacs/site-lisp/emacspeak/lisp
 
+sed -i "2i\export DTK_PROGRAM=$SERVER" $installDir/bin/emacspeak
+
 echo
 echo "you may want to copy this line in your .bashrc file"
-echo "alias emacspeak=\"DTK_PROGRAM=outloud emacs -q -l $EMACSPEAK_DIR/emacspeak-setup.el -l \$HOME/.emacs\""
+echo "alias emacspeak=\"DTK_PROGRAM=$SERVER emacs -q -l $EMACSPEAK_DIR/emacspeak-setup.el -l \$HOME/.emacs\""
 echo
 echo "then run emacspeak in a new shell terminal by typing emacspeak and press RETURN"
 echo 

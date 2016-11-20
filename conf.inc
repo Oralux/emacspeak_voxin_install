@@ -60,10 +60,36 @@ debian_check_emacs() {
 }
 
 debian_check_libvoxin() {
-    dpkg -l "libvoxin*" &> /dev/null    
+    local status=1
+    if [ -e /var/opt/IBM/ibmtts/cfg/eci.ini ]; then 
+	dpkg -l "libvoxin*" &> /dev/null    
+	if [ "$?" != "0" ]; then
+	    status=0
+	fi
+    fi
+    return $status
 }
 
 debian_install_dep() {
     apt-get update  &> $LOG
-    apt-get -y install build-essential libasound2-plugins libasound2-dev texinfo tcl8.6-dev tclx8.4 &>> $LOG
+
+    apt-get -y install tcl8.4 tclx8.4 tk8.4 tcl8.4-dev libasound2-dev texinfo &>> $LOG
+    case $(uname -m) in
+	x86_64|ia64)
+	    apt-get -y install g++-multilib libasound2:i386 libasound2-dev:i386 libx11-6:amd64 libx11-6:i386 &>> $LOG
+	    dpkg --force-architecture -i ./archives/ia32-tcl8.4*_i386.deb &>> $LOG
+	    dpkg --force-architecture -i ./archives/ia32-tclx32-8.4*_i386.deb &>> $LOG
+	    dpkg --force-architecture -i ./archives/ia32-tk8.4*_i386.deb &>> $LOG
+	    apt-get -y install libasound2-dev:i386 libasound2-plugins:i386 build-essential &>> $LOG
+	    pushd /usr/lib32 &>> $LOG
+	    ln -sf libtcl8.4.so.0 libtcl8.4.so &>> $LOG
+	    ln -sf libtclx32-8.4.so.0 libtclx32-8.4.so &>> $LOG
+	    popd
+	    SERVER=32-outloud
+	    ;;
+	*)
+	    apt-get -y install libasound2-plugins build-essential &>> $LOG
+	    SERVER=outloud
+	    ;;
+    esac
 }
