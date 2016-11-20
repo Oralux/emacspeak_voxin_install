@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ "$(id -u)" != "0" ]; then
     echo "Please run this installer as root."
     exit 0
-fi  
+fi
 
 case $(uname -m) in
     x86_64|ia64)
@@ -15,4 +15,3 @@ case $(uname -m) in
     *)
 		;;
 esac
-

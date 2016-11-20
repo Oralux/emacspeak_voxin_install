@@ -1,4 +1,4 @@
-#!/bin/bash -vx
+#!/bin/bash
 # 2016, Gilles Casse <gcasse@oralux.org>
 #
 
@@ -7,7 +7,7 @@ source conf.inc
 check_distro
 
 $check_libvoxin
-if [ "$?" != "0" ]; then 
+if [ "$?" != "0" ]; then
     echo "install Voxin < 1.00 before running this script."
     exit 0
 fi
@@ -15,12 +15,12 @@ fi
 if [ "$(id -u)" != "0" ]; then
     echo "please run this script as root."
     exit 0
-fi  
+fi
 
 $check_emacs
 if [ "$?" != "0" ]; then
     echo "install emacs before running this script."
-    exit 0    
+    exit 0
 fi
 
 set -e
@@ -66,4 +66,4 @@ echo "you may want to copy this line in your .bashrc file"
 echo "alias emacspeak=\"DTK_PROGRAM=$SERVER emacs -q -l $EMACSPEAK_DIR/emacspeak-setup.el -l \$HOME/.emacs\""
 echo
 echo "then run emacspeak in a new shell terminal by typing emacspeak and press RETURN"
-echo 
+echo
