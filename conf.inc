@@ -15,7 +15,7 @@ check_distro()
     local status=1
 
     # Check if this is an arch linux based distro
-    if [ -e "/etc/arch-release" ]; then
+    if [ -e "/etc/pacman.conf" ]; then
 	check_emacs=arch_check_emacs
 	check_libvoxin=arch_check_libvoxin
 	install_dep=arch_install_dep
