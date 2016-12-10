@@ -1,6 +1,20 @@
-This installer builds emacspeak 44.0 and its outloud speech server on 32 or 64 bits machines (x86, x86_64) 
-Emacs (>=24) and voxin (>=1.00) must be installed before running this script.
+This installer builds emacspeak 45.0 with espeak or voxin.
 
-The proposed instruction to run emacspeak will be displayed at the end of the script; you may want to copy 
-them in your .bashrc file.
+Emacs (>=24) must be installed before running this script.
+Voxin (>=1.00) is optional and available at:
+http://voxin.oralux.net
+
+To launch the installer, just type as root in a terminal:
+./install.sh
+
+The proposed instruction to launch emacspeak will be displayed at the
+end of the script; you may want to copy it in your .bashrc file.
+
+For example, if you have installed emacspeak in the $DIR directory,
+then the instruction with espeak will be:
+alias emacspeak "emacs -q -l $DIR/emacspeak-setup.el -l $HOME/.emacs"
+
+For using voxin by default, set also the DTK_PROGRAM variable to
+outloud:
+alias emacspeak "DTK_PROGRAM=outloud emacs -q -l $DIR/emacspeak-setup.el -l $HOME/.emacs"
 

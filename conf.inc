@@ -50,6 +50,7 @@ arch_check_espeak() {
 }
 
 arch_install_dep() {
+    pacman -Syu
     pacman --noconfirm -S base-devel wget texinfo alsa-lib alsa-plugins tcl tk &> $LOG
      
     #tclx
