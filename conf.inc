@@ -8,6 +8,7 @@ SERVER=outloud
 LOG=$workDir/emacspeak_voxin_install.$PV.log
 TCLX_AUR=https://aur.archlinux.org/cgit/aur.git/snapshot/tclx.tar.gz
 
+mkdir -p $workDir
 
 ###
 check_distro()
