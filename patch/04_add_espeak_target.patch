@@ -1,0 +1,21 @@
+diff -urN a/Makefile b/Makefile
+--- a/Makefile	2016-12-10 12:34:39.733333306 +0000
++++ b/Makefile	2016-12-10 12:38:24.109999996 +0000
+@@ -144,6 +144,7 @@
+ ECI=servers/linux-outloud
+ ESPEAK=servers/linux-espeak/tclespeak.cpp \
+ servers/linux-espeak/Makefile\
++servers/linux-espeak/tclespeak.so
+ 
+ DTKTTS=servers/software-dtk/tcldtk.c \
+ servers/software-dtk/DTK \
+@@ -204,6 +205,9 @@
+ outloud:
+ 	cd servers/linux-outloud; $(MAKE)
+ 
++espeak:
++	cd servers/linux-espeak; $(MAKE)
++
+ # }}}
+ # {{{  Maintainance targets tar  dist
+ GITVERSION=$(shell git show HEAD | head -1  | cut -b 8- )
