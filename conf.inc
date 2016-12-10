@@ -1,11 +1,11 @@
-PV=44.0
+PV=45.0
 URL=https://github.com/tvraman/emacspeak/releases/download/$PV/emacspeak-$PV.tar.bz2
 archivesDir=$PWD/archives
 workDir=$PWD/build
 installDir=$workDir/install/emacspeak-$PV
 patchDir=$PWD/patch
 SERVER=outloud
-LOG=/tmp/emacspeak_voxin_install.$PV.log
+LOG=$workDir/emacspeak_voxin_install.$PV.log
 TCLX_AUR=https://aur.archlinux.org/cgit/aur.git/snapshot/tclx.tar.gz
 
 
@@ -18,6 +18,7 @@ check_distro()
     if [ -e "/etc/pacman.conf" ]; then
 	check_emacs=arch_check_emacs
 	check_libvoxin=arch_check_libvoxin
+	check_espeak=arch_check_espeak
 	install_dep=arch_install_dep
 	status=0
     else
@@ -26,6 +27,7 @@ check_distro()
 	if [ "$?" = "0" ]; then
 	    check_emacs=debian_check_emacs
 	    check_libvoxin=debian_check_libvoxin
+	    check_espeak=debian_check_espeak
 	    install_dep=debian_install_dep
 	    status=0
 	fi
@@ -40,6 +42,10 @@ arch_check_emacs() {
 
 arch_check_libvoxin() {
     pacman -Q libvoxin &> /dev/null    
+}
+
+arch_check_espeak() {
+    pacman -Q espeak &> /dev/null    
 }
 
 arch_install_dep() {
@@ -61,6 +67,10 @@ debian_check_emacs() {
 
 debian_check_libvoxin() {
     dpkg -l "libvoxin*" &> /dev/null    
+}
+
+debian_check_espeak() {
+    dpkg -l "espeak*" &> /dev/null    
 }
 
 debian_install_dep() {

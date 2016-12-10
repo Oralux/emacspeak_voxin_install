@@ -1,0 +1,12 @@
+diff -urN a/Makefile b/Makefile
+--- a/Makefile	2016-12-10 00:12:49.316666633 +0000
++++ b/Makefile	2016-12-10 12:34:39.733333306 +0000
+@@ -282,7 +282,7 @@
+ 	$(INSTALL) -m 0755  etc/emacspeak.sh $(bindir)/emacspeak
+ 	$(INSTALL) -d $(infodir)
+ 	cd info; \
+-  cp *info* $(infodir)
++	cp *info* $(infodir) || echo "No info files" 
+ 
+ uninstall:
+ 	rm -rf $(infodir)/emacspeak.info* $(bindir)/emacspeak $(libdir)

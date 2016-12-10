@@ -1,0 +1,13 @@
+diff -urN a/Makefile b/Makefile
+--- a/Makefile	2016-09-29 23:22:21.000000000 +0000
++++ b/Makefile	2016-12-09 23:55:53.433333335 +0000
+@@ -201,6 +201,9 @@
+ info:
+ 	cd info; $(MAKE) -k
+ 
++outloud:
++	cd servers/linux-outloud; $(MAKE)
++
+ # }}}
+ # {{{  Maintainance targets tar  dist
+ GITVERSION=$(shell git show HEAD | head -1  | cut -b 8- )
