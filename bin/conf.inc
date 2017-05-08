@@ -1,16 +1,15 @@
+PN=emacspeak_voxin_install
 PV=46.0
 URL=https://github.com/tvraman/emacspeak/releases/download/$PV/emacspeak-$PV.tar.bz2
 archivesDir=$PWD/archives
 workDir=$PWD/build
 installDir=$workDir/install/emacspeak-$PV
-patchDir=$PWD/patch
+logDir=$PWD/log
 SERVER=outloud
-LOG=$workDir/emacspeak_voxin_install.$PV.log
+LOG=$logDir/$PV.log
 TCLX_AUR=https://aur.archlinux.org/cgit/aur.git/snapshot/tclx.tar.gz
 
 EMACS25_DOM_URL="http://git.savannah.gnu.org/cgit/emacs.git/plain/lisp/dom.el?h=emacs-25"
-
-mkdir -p $workDir
 
 ###
 check_distro()
@@ -79,5 +78,5 @@ debian_check_espeak() {
 
 debian_install_dep() {
     apt-get update  &> $LOG
-    apt-get -y install build-essential libasound2-plugins libasound2-dev texinfo tcl8.6-dev tclx8.4 &>> $LOG
+    apt-get -y install build-essential libespeak-dev libasound2-plugins libasound2-dev texinfo tcl8.6-dev tclx8.4 &>> $LOG
 }

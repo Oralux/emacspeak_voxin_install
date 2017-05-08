@@ -2,8 +2,10 @@
 # 2016-2017, Gilles Casse <gcasse@oralux.org>
 #
 
-BASE=$(cd "$(dirname "$0")" && pwd)
+BASE="$(cd "$(dirname "$0")" && pwd)"
 source $BASE/bin/conf.inc
+
+mkdir -p $workDir $logDir
 
 check_distro
 
