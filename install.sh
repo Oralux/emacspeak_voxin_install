@@ -1,8 +1,9 @@
 #!/bin/bash
-# 2016, Gilles Casse <gcasse@oralux.org>
+# 2016-2017, Gilles Casse <gcasse@oralux.org>
 #
 
-source conf.inc
+BASE=$(cd "$(dirname "$0")" && pwd)
+source $BASE/bin/conf.inc
 
 check_distro
 
@@ -62,34 +63,37 @@ if [ -e "emacspeak-${PV}" ]; then
     rm -rf emacspeak-${PV}
 fi
 
-tar -jxf emacspeak-${PV}.tar.bz2
+tar --no-same-owner -jxf emacspeak-${PV}.tar.bz2
 cd emacspeak-${PV}
 
-for i in $(ls $patchDir/*.patch); do
-    patch -p1 < $i
-done
+EMACS_VERSION=$(emacs --version | head -1 | awk '{print $3}')
+case "$EMACS_VERSION" in
+    24*)
+	wget "$EMACS25_DOM_URL" -O lisp/dom.el &>> $LOG
+	;;
+    *) ;;
+esac
 
 echo "building emacspeak... "
 make config &>> $LOG
+make &>> $LOG
 if [ "$voxin_found" = "1" ]; then
     make outloud &>> $LOG
 fi
 if [ "$espeak_found" = "1" ]; then
     make espeak &>> $LOG
 fi
-make emacspeak &>> $LOG
 
-if [ -e "$installDir" ]; then
-  rm -rf "$installDir"
+chmod -R ugo+rX .
+
+echo "
+To run this Emacspeak build, add the following lines to the top of your emacs init file (e.g. in  ~/.emacs ); then, start emacs
+" | tee -a $LOG
+
+if [ -n "$DTK" ]; then
+	echo '(setenv "DTK_PROGRAM" "outloud")' | tee -a $LOG
 fi
-mkdir -p $installDir
-make prefix=$installDir install &>> $LOG
+echo "(load-file \"$PWD/lisp/emacspeak-setup.el\")
+" | tee -a $LOG
 
-EMACSPEAK_DIR=$installDir/share/emacs/site-lisp/emacspeak/lisp
-
-echo
-echo "you may want to copy this line in your .bashrc file"
-echo "alias emacspeak=\"$DTK emacs -q -l $EMACSPEAK_DIR/emacspeak-setup.el -l \$HOME/.emacs\""
-echo
-echo "then run emacspeak in a new shell terminal by typing emacspeak and press RETURN"
-echo 
+echo "These instructions can be retrieved at the end of the log file: $LOG"

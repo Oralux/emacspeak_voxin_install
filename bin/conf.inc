@@ -1,4 +1,4 @@
-PV=45.0
+PV=46.0
 URL=https://github.com/tvraman/emacspeak/releases/download/$PV/emacspeak-$PV.tar.bz2
 archivesDir=$PWD/archives
 workDir=$PWD/build
@@ -7,6 +7,8 @@ patchDir=$PWD/patch
 SERVER=outloud
 LOG=$workDir/emacspeak_voxin_install.$PV.log
 TCLX_AUR=https://aur.archlinux.org/cgit/aur.git/snapshot/tclx.tar.gz
+
+EMACS25_DOM_URL="http://git.savannah.gnu.org/cgit/emacs.git/plain/lisp/dom.el?h=emacs-25"
 
 mkdir -p $workDir
 
