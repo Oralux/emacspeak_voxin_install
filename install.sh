@@ -48,8 +48,7 @@ if [ "$?" != "0" ]; then
     exit 0    
 fi
 
-set -e
-trap "echo error: for more details check $LOG " ERR
+trap error_msg ERR
 
 echo "initialization; please wait... "
 $install_dep

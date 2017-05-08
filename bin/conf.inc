@@ -80,3 +80,8 @@ debian_install_dep() {
     apt-get update  &> $LOG
     apt-get -y install build-essential libespeak-dev libasound2-plugins libasound2-dev texinfo tcl8.6-dev tclx8.4 &>> $LOG
 }
+
+error_msg() {
+    echo "Error: for more details check log file: $LOG"
+    exit 1
+}
