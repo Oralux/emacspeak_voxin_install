@@ -1,0 +1,129 @@
+diff --git a/servers/linux-outloud/atcleci.cpp b/servers/linux-outloud/atcleci.cpp
+index 0c5f8f8..b604492 100644
+--- a/servers/linux-outloud/atcleci.cpp
++++ b/servers/linux-outloud/atcleci.cpp
+@@ -84,7 +84,6 @@
+ /*
+  * globals
+  */
+-
+ static snd_pcm_t *AHandle = NULL;
+ static snd_output_t *Log = NULL;
+ short *waveBuffer = NULL;
+@@ -160,6 +159,7 @@ int Pause(ClientData, Tcl_Interp *, int, Tcl_Obj *CONST[]);
+ int Resume(ClientData, Tcl_Interp *, int, Tcl_Obj *CONST[]);
+ int SetLanguage(ClientData, Tcl_Interp *, int, Tcl_Obj *CONST[]);
+ int alsa_close();
++int alsa_retry();
+ int eciCallback(void *, int, long, void *);
+ 
+ //>
+@@ -259,8 +259,19 @@ static void xrun(void) {
+   snd_pcm_status_alloca(&status);
+   if ((res = snd_pcm_status(AHandle, status)) < 0) {
+     fprintf(stderr, "status error: %s", snd_strerror(res));
++    alsa_close();
+     exit(EXIT_FAILURE);
+   }
++  if (snd_pcm_status_get_state(status) == SND_PCM_STATE_RUNNING) {
++    // DMIX appears to be in a confused state, attempt to restore sanity.
++    if ((res = snd_pcm_prepare(AHandle)) < 0) {
++      // Attempt to fix failed! 
++      fprintf(stderr, "XRUN: prepare error: %s", snd_strerror(res));
++      alsa_close();
++      exit(EXIT_FAILURE);
++    }
++    return; // ready to continue 
++  }
+   if (snd_pcm_status_get_state(status) == SND_PCM_STATE_XRUN) {
+     struct timeval now, diff, tstamp;
+     gettimeofday(&now, 0);
+@@ -270,15 +281,15 @@ static void xrun(void) {
+             diff.tv_sec * 1000 + diff.tv_usec / 1000.0);
+     if ((res = snd_pcm_prepare(AHandle)) < 0) {
+       fprintf(stderr, "xrun: prepare error: %s", snd_strerror(res));
++      alsa_close();
+       exit(EXIT_FAILURE);
+     }
+-    return;  // ok, data should be accepted
+-             // again
++    return;  // ok, data should be accepted again
+   }
+-
+-  fprintf(stderr, "read/write error, state = %s",
++  fprintf(stderr, "read/write error, state = %s\n",
+           snd_pcm_state_name(snd_pcm_status_get_state(status)));
+-  exit(EXIT_FAILURE);
++  // DMIX leaves device in a strange state, so retry.
++  alsa_retry();
+ }
+ 
+ static void suspend(void) {
+@@ -294,6 +305,7 @@ static void suspend(void) {
+     fflush(stderr);
+     if ((res = snd_pcm_prepare(AHandle)) < 0) {
+       fprintf(stderr, "suspend: prepare error: %s", snd_strerror(res));
++      alsa_close();
+       exit(EXIT_FAILURE);
+     }
+   }
+@@ -307,16 +319,22 @@ static void suspend(void) {
+ static ssize_t pcm_write(short *data, size_t count) {
+   ssize_t r;
+   ssize_t result = 0;
++  int res;
+   while (count > 0) {
+     r = snd_pcm_writei(AHandle, data, count);
+     if (r == -EAGAIN || (r >= 0 && (size_t)r < count)) {
+-      snd_pcm_wait(AHandle, 1000);
++      snd_pcm_wait(AHandle, 100);
+     } else if (r == -EPIPE) {
+-      xrun();
++      if ((res = snd_pcm_prepare(AHandle)) < 0) {
++        fprintf(stderr, "Write/Retry: prepare error: %s", snd_strerror(res));
++        alsa_close();
++        exit(EXIT_FAILURE);
++      }
+     } else if (r == -ESTRPIPE) {
+       suspend();
+     } else if (r < 0) {
+       fprintf(stderr, "write error: %s", snd_strerror(r));
++      alsa_close();
+       exit(EXIT_FAILURE);
+     }
+     if (r > 0) {
+@@ -362,11 +380,24 @@ static size_t alsa_init() {
+ 
+ int alsa_close() {
+   // shut down alsa
+-  snd_pcm_close(AHandle);
++  if (AHandle) {
++                snd_pcm_close(AHandle);
++                }
+   free(waveBuffer);
+   return TCL_OK;
+ }
+ 
++int alsa_retry() {
++  fprintf(stderr, "re-initializing ALSA\n");
++  int res;
++  if ((res = snd_pcm_prepare(AHandle)) < 0) {
++    fprintf(stderr, "Retry: prepare error: %s", snd_strerror(res));
++    alsa_close();
++    exit(EXIT_FAILURE);
++  }
++  return TCL_OK;
++}
++
+ //>
+ //<eciFree
+ 
+@@ -742,7 +773,7 @@ int Stop(ClientData eciHandle, Tcl_Interp *interp, int objc,
+          Tcl_Obj *CONST objv[]) {
+   if (_eciStop(eciHandle)) {
+     alsa_reset();
+-    usleep(5);
++    usleep(100);
+     return TCL_OK;
+   }
+   Tcl_SetResult(interp, const_cast<char *>("Could not stop synthesis"),

@@ -75,6 +75,8 @@ case "$EMACS_VERSION" in
     *) ;;
 esac
 
+patch -p1 < $archivesDir/git_diff_46.0_cef3db579d8c839ca917bd75722427d6fe9d36df.patch
+
 echo "building emacspeak... "
 make config &>> $LOG
 make &>> $LOG
