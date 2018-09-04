@@ -65,7 +65,7 @@ arch_install_dep() {
 
 # debian based specific commands
 debian_check_emacs() {
-    (dpkg -l emacs || dpkg -l emacs-nox) &> /dev/null    
+    dpkg -l emacs* &> /dev/null    
 }
 
 debian_check_libvoxin() {
