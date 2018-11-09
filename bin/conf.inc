@@ -1,5 +1,5 @@
 PN=emacspeak_voxin_install
-PV=46.0
+PV=48.0
 URL=https://github.com/tvraman/emacspeak/releases/download/$PV/emacspeak-$PV.tar.bz2
 archivesDir=$PWD/archives
 workDir=$PWD/build
@@ -8,8 +8,6 @@ logDir=$PWD/log
 SERVER=outloud
 LOG=$logDir/$PV.log
 TCLX_AUR=https://aur.archlinux.org/cgit/aur.git/snapshot/tclx.tar.gz
-
-EMACS25_DOM_URL="http://git.savannah.gnu.org/cgit/emacs.git/plain/lisp/dom.el?h=emacs-25"
 
 ###
 check_distro()
@@ -47,7 +45,7 @@ arch_check_libvoxin() {
 }
 
 arch_check_espeak() {
-    pacman -Q espeak &> /dev/null    
+    pacman -Q espeak || pacman -Q espeak-ng &> /dev/null    
 }
 
 arch_install_dep() {

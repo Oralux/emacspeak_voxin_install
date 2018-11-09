@@ -1,22 +1,24 @@
-This installer builds emacspeak 46.0 with espeak or voxin.
+This installer builds emacspeak 48.0 with espeak or voxin.
 
-Emacs (>=24) must be installed before running this script.
+Emacs (>=25) must be installed before running this script.
 Voxin (>=1.00) is optional and available at:
 http://voxin.oralux.net
 
+* install
 To launch the installer, just type as root in a terminal:
 ./install.sh
 
 The proposed instruction to launch emacspeak will be displayed at the
 end of the script.
 
+* emacs init file 
 In summary, update your emacs init file [1] then start emacs.
 
-For example, if you have installed emacspeak_voxin_install in /home/user1
-directory, the instruction to add at the beginnong of your emacs init
-file [1] is:
+For example, if you have installed emacspeak_voxin_install in the
+/home/user1 directory, the instruction to add at the beginnong of your
+emacs init file [1] is:
 
-(load-file "/home/user1/emacspeak_voxin_install/build/emacspeak-46.0/lisp/emacspeak-setup.el")
+(load-file "/home/user1/emacspeak_voxin_install/build/emacspeak-48.0/lisp/emacspeak-setup.el")
 
 Then emacspeak will use espeak by default.
 
@@ -24,7 +26,7 @@ For using voxin by default, you may set the DTK_PROGRAM variable to
 outloud before calling load-file:
 
 (setenv "DTK_PROGRAM" "outloud")
-(load-file "/home/user1/emacspeak_voxin_install/build/emacspeak-46.0/lisp/emacspeak-setup.el")
+(load-file "/home/user1/emacspeak_voxin_install/build/emacspeak-48.0/lisp/emacspeak-setup.el")
 
 
 Note [1]:

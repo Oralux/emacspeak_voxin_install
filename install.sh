@@ -1,5 +1,5 @@
 #!/bin/bash
-# 2016-2017, Gilles Casse <gcasse@oralux.org>
+# 2016-2018, Gilles Casse <gcasse@oralux.org>
 #
 
 BASE="$(cd "$(dirname "$0")" && pwd)"
@@ -50,10 +50,10 @@ fi
 
 trap error_msg ERR
 
-echo "initialization; please wait... "
+echo "Initialization; please wait... "
 $install_dep
 
-echo "downloading emacspeak $PV... "
+echo "Downloading emacspeak $PV... "
 mkdir -p $workDir
 cd $workDir
 if [ ! -e "emacspeak-${PV}.tar.bz2" ]; then
@@ -67,17 +67,7 @@ fi
 tar --no-same-owner -jxf emacspeak-${PV}.tar.bz2
 cd emacspeak-${PV}
 
-EMACS_VERSION=$(emacs --version | head -1 | awk '{print $3}')
-case "$EMACS_VERSION" in
-    24*)
-	wget "$EMACS25_DOM_URL" -O lisp/dom.el &>> $LOG
-	;;
-    *) ;;
-esac
-
-patch -p1 < $archivesDir/git_diff_46.0_cef3db579d8c839ca917bd75722427d6fe9d36df.patch
-
-echo "building emacspeak... "
+echo "Building emacspeak... "
 make config &>> $LOG
 make &>> $LOG
 if [ "$voxin_found" = "1" ]; then
