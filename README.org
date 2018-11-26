@@ -1,37 +1,81 @@
-This installer builds emacspeak 48.0 with espeak or voxin.
+This installer builds by default emacspeak 49.0 with espeak or voxin
+and works currently on Ubuntu 18.04.
 
-Emacs (>=25) must be installed before running this script.
 Voxin (>=1.00) is optional and available at:
 http://voxin.oralux.net
 
-* install
-To launch the installer, just type as root in a terminal:
+This installer may also help to build:
+- another emacspeak archive,
+- emacs or emacspeak from the sources in development (git HEAD).
+See paragraph 'Usage' for more details.
+
+* Build emacspeak 49.0
+To download and build emacspeak 49.0, just type as a non-root user in
+a terminal:
 ./install.sh
 
 The proposed instruction to launch emacspeak will be displayed at the
 end of the script.
 
-* emacs init file 
-In summary, update your emacs init file [1] then start emacs.
+* Emacs init file 
+In summary, update your emacs init file then start emacs.
 
-For example, if you have installed emacspeak_voxin_install in the
-/home/user1 directory, the instruction to add at the beginnong of your
-emacs init file [1] is:
-
-(load-file "/home/user1/emacspeak_voxin_install/build/emacspeak-48.0/lisp/emacspeak-setup.el")
-
-Then emacspeak will use espeak by default.
-
-For using voxin by default, you may set the DTK_PROGRAM variable to
-outloud before calling load-file:
-
-(setenv "DTK_PROGRAM" "outloud")
-(load-file "/home/user1/emacspeak_voxin_install/build/emacspeak-48.0/lisp/emacspeak-setup.el")
-
-
-Note [1]:
-The emacs init file is one of these three files:
+For memo, the emacs init file is one of these three files:
 ~/.emacs
 ~/.emacs.el
 ~/.emacs.d/init.el
+
+
+For example, if you have installed emacspeak_voxin_install in the
+/home/user1 directory, the instruction to add at the beginnong of your
+emacs init file is:
+
+(load-file "/home/user1/emacspeak_voxin_install/build/emacspeak-49.0/lisp/emacspeak-setup.el")
+
+Then emacspeak will use espeak by default.
+
+For using voxin, you may set the DTK_PROGRAM variable to
+outloud before calling load-file:
+
+(setenv "DTK_PROGRAM" "outloud")
+(load-file "/home/user1/emacspeak_voxin_install/build/emacspeak-49.0/lisp/emacspeak-setup.el")
+
+
+* Usage
+
+The following information are copied from:
+./install.sh -h
+
+
+This installer builds emacspeak with espeak or voxin.
+By default, the emacspeak 49.0 archive is downloaded. 
+But another emacspeak release or even its latest sources from GitHub
+can be selected.
+
+Optionally the developer version of emacs (git HEAD) can be
+downloaded and built with or without X support.
+
+OPTIONS
+-c, --clean            clean all: delete the build, install directories and log file
+-r, --release=version  download the indicated version (e.g. '49.0' or 'latest' for the developer version).
+-e, --emacs            download and build emacs (by default with X support for graphical environment)
+-n, --nox              build emacs without X support (for console based environment)
+-h, --help             display this help 
+
+EXAMPLES
+# build emacspeak 49.0
+ ./install.sh
+
+# build emacspeak 49.0 and emacs (with X)
+ ./install.sh --emacs
+
+# build emacspeak 49.0 and emacs (without X)
+ ./install.sh --nox
+
+# build emacspeak 48.0
+ ./install.sh --release 48.0
+
+# build emacspeak from the currently developed sources (git HEAD)
+ ./install.sh --release latest
+
 
