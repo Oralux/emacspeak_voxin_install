@@ -2,7 +2,6 @@
 
 source conf.inc
 
-REL=1
 BASE="$(cd "$(dirname "$0")" && pwd)"
 workDir=$(mktemp -d)
 DEST=$workDir/$PN-$PV-$REL

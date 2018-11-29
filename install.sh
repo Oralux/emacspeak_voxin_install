@@ -6,6 +6,8 @@ BASE="$(cd "$(dirname "$0")" && pwd)"
 NAME=$(basename "$0")
 source "$BASE"/bin/conf.inc
 
+[ "$UID" = "0" ] && echo "Sorry, does not run this script as root." && exit 0
+
 mkdir -p "$installDir" "$logDir"
 echo "$0 $@" > "$LOG"
 
@@ -60,7 +62,6 @@ else
     echo "no"
 fi
 
-[ "$UID" = "0" ] && leave "Sorry, does not run this script as root." 0
 [ -n "$CLEAN" ] && clean
 
 [ "$voxinFound" = "0" ] && [ "$espeakFound" = "0" ] && leave "Install voxin or espeak before running this script." 0

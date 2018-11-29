@@ -2,6 +2,7 @@ PN=emacspeak_voxin_install
 
 # PV: default emacspeak version 
 PV=49.0
+REL=2
 GIT_EMACSPEAK_URL=https://github.com/tvraman/emacspeak.git
 GIT_EMACS_URL=https://github.com/mirrors/emacs.git
 archivesDir=$BASE/archives
@@ -94,8 +95,8 @@ archInstallDep() {
 	# if [ -n "$withEmacs" ]; then
 	# 	local suffix
 	# 	[ "$with_X" = "0" ] && suffix=-nox
-	# 	apt-get build-dep emacs$suffix
-	# 	apt-get install git  &>> "$LOG" || true
+	# 	apt-get -y build-dep emacs$suffix
+	# 	apt-get -y install git  &>> "$LOG" || true
 	# fi
 	
 }
@@ -116,13 +117,13 @@ debianCheckEspeak() {
 debianInstallDep() {
 	local withEmacs=$1
 	local with_X=$2
-    sudo apt-get update  &>> "$LOG"
+    sudo apt-get update | tee -a "$LOG"
     sudo apt-get -y install build-essential libespeak-dev libasound2-plugins libasound2-dev texinfo tcl8.6-dev tclx8.4 &>> "$LOG"
 	if [ -n "$withEmacs" ]; then
 		local suffix
 		[ "$with_X" = "0" ] && suffix=-nox
-		sudo apt-get build-dep emacs$suffix &>> "$LOG"
-	 	sudo apt-get install git &>> "$LOG" || true
+		sudo apt-get -y build-dep emacs$suffix &>> "$LOG"
+	 	sudo apt-get -y install git &>> "$LOG" || true
 	fi
 }
 
