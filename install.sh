@@ -13,7 +13,7 @@ echo "$0 $@" > "$LOG"
 
 unset CLEAN EMACS HELP emacspeakDir
 WITH_X=1
-RELEASE=$PV
+EMACSPEAK_RELEASE=$PV
 OPTIONS=`getopt -o cehnr: --long clean,emacs,help,nox,release: \
              -n "$NAME" -- "$@"`
 [ $? != 0 ] && usage && exit 1
@@ -25,7 +25,7 @@ while true; do
     -e|--emacs) EMACS=1; shift;;
     -h|--help) HELP=1; shift;;
     -n|--nox) EMACS=1; WITH_X=0; shift;;
-    -r|--release) RELEASE=$2; shift 2;;
+    -r|--release) EMACSPEAK_RELEASE=$2; shift 2;;
     --) shift; break;;
     *) break;;
   esac
@@ -34,10 +34,6 @@ done
 [ -n "$HELP" ] && usage && exit 0
 
 checkDistro
-
-if [ -n "$EMACS" ] || [ "$RELEASE" = "latest" ]; then
-	GIT=$(which git) || leave "git not found"
-fi
 
 voxinFound=0
 espeakFound=0
@@ -72,7 +68,7 @@ trap quit ERR
 Or use this script to build the developper version of emacs ( $0 --help )." 0 )
 
 msg "Initialization; please wait... "
-$installDep $EMACS $WITH_X
+$installDep $EMACS $WITH_X "$EMACSPEAK_RELEASE"
 
 if [ -n "$EMACS" ]; then
 	msg "Downloading emacs... "
@@ -84,16 +80,16 @@ if [ -n "$EMACS" ]; then
 	gitCleanLocalCopy "$workDir"/emacs
 fi
 
-msg "Downloading emacspeak ($RELEASE)... "
-if [ "$RELEASE" = "latest" ]; then
+msg "Downloading emacspeak ($EMACSPEAK_RELEASE)... "
+if [ "$EMACSPEAK_RELEASE" = "latest" ]; then
 	downloadFromGit $workDir/emacspeak $GIT_EMACSPEAK_URL
-	[ ! -e "$workDir/emacspeak-$RELEASE" ] && ln -sf emacspeak "$workDir/emacspeak-$RELEASE"
+	[ ! -e "$workDir/emacspeak-$EMACSPEAK_RELEASE" ] && ln -sf emacspeak "$workDir/emacspeak-$EMACSPEAK_RELEASE"
 else
-	downloadEmacspeakArchive $workDir $RELEASE
+	downloadEmacspeakArchive $workDir $EMACSPEAK_RELEASE
 fi
 
 msg "Building emacspeak... "
-emacspeakDir="$workDir/emacspeak-$RELEASE"
+emacspeakDir="$workDir/emacspeak-$EMACSPEAK_RELEASE"
 buildEmacspeak "$emacspeakDir"
 
 if [ -n "$emacsAlias" ]; then
