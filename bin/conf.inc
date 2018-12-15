@@ -2,7 +2,7 @@ PN=emacspeak_voxin_install
 
 # PV: default emacspeak version 
 PV=49.0
-REL=3
+REL=4
 GIT_EMACSPEAK_URL=https://github.com/tvraman/emacspeak.git
 GIT_EMACS_URL=https://github.com/mirrors/emacs.git
 archivesDir=$BASE/archives
@@ -13,6 +13,8 @@ logDir=$BASE/log
 SERVER=outloud
 TCLX_AUR=https://aur.archlinux.org/cgit/aur.git/snapshot/tclx.tar.gz
 LOG=$logDir/install.$(date -Iseconds)
+DEP=$workDir/dep.txt
+LIST_DEB="autoconf build-essential libespeak-dev libasound2-plugins libasound2-dev texinfo tcl8.6-dev tclx8.4 libncurses5-dev libxml2-dev liblcms2-2 libgnutls28-dev"
 
 ###
 gitDownloadDevelopperVersion() {
@@ -23,8 +25,12 @@ gitDownloadDevelopperVersion() {
 }
 
 gitUpdateLocalCopy() {
-	local dir=$1
-	[ ! -d "$dir" ] || git -C "$dir" pull &>> "$LOG"
+        local dir=$1
+        if [ -d "$dir" ]; then
+          git -C "$dir" fetch --depth 1 &>> "$LOG"
+          git -C "$dir" reset --hard origin/master &>> "$LOG"
+          git -C "$dir" clean -dfx &>> "$LOG"
+        fi
 }
 
 gitCleanLocalCopy() {
@@ -42,7 +48,7 @@ checkDistro()
 	# checkEmacs=archCheckEmacs
 	# checkLibvoxin=archCheckLibvoxin
 	# checkEspeak=archCheckEspeak
-	# installDep=archInstallDep
+	# getDep=archInstallDep
 	# status=0
     # else
 	# Check if this is a debian based distro
@@ -51,7 +57,7 @@ checkDistro()
 	    checkEmacs=debianCheckEmacs
 	    checkLibvoxin=debianCheckLibvoxin
 	    checkEspeak=debianCheckEspeak
-	    installDep=debianInstallDep
+	    getDep=debianGetDep
 	    status=0
 
 		# TODO Arch??
@@ -75,7 +81,7 @@ archCheckEspeak() {
     pacman -Q espeak || pacman -Q espeak-ng &> /dev/null    
 }
 
-archInstallDep() {
+archGetDep() {
 	local withEmacs=$1
 	local with_X=$2
 
@@ -103,33 +109,37 @@ archInstallDep() {
 
 # debian based specific commands
 debianCheckEmacs() {
-    dpkg -l emacs* &> /dev/null    
+    dpkg -l | grep " emacs" &> /dev/null    
 }
 
 debianCheckLibvoxin() {
-    dpkg -l "libvoxin*" &> /dev/null    
+    dpkg -l | grep libvoxin &> /dev/null    
 }
 
 debianCheckEspeak() {
-    dpkg -l "espeak*" &> /dev/null    
+    dpkg -l | grep libespeak &> /dev/null    
 }
 
-debianInstallDep() {
+debianGetDep() {
 	local withEmacs=$1
 	local with_X=$2
 	local emacspeakRelease=$3
-    sudo apt-get update | tee -a "$LOG"
-    sudo apt-get -y install build-essential libespeak-dev libasound2-plugins libasound2-dev texinfo tcl8.6-dev tclx8.4 libncurses-dev &>> "$LOG"
+	local list="$LIST_DEB"
 
 	if [ "$emacspeakRelease" = "latest" ] || [ -n "$withEmacs" ]; then
-		( which git || sudo apt-get -y install git ) &>> "$LOG"
+		list="$list git"
 	fi
 
 	if [ -n "$withEmacs" ]; then
 		local suffix
 		[ "$with_X" = "0" ] && suffix=-nox
-		sudo apt-get -y build-dep emacs$suffix &>> "$LOG"
+		list="$list emacs$suffix"
 	fi
+
+	for i in $list; do
+		( dpkg -l | grep "$i" || echo -n " $i" >> "$DEP" ) &>> "$LOG"
+	done
+
 }
 
 usage() {
@@ -186,8 +196,8 @@ buildEmacs() {
 		flags="$flags --with-x=no --without-gsettings"
 	fi   
 	
-	./autogen.sh &>> "$LOG"
-	./configure $flags &>> "$LOG"
+	./autogen.sh | tee -a "$LOG"
+	./configure $flags | tee -a "$LOG"
 	make bootstrap &>> "$LOG"
 	make &>> "$LOG"
 	make install &>> "$LOG"

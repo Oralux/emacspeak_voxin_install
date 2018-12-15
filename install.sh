@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 # 2016-2018, Gilles Casse <gcasse@oralux.org>
 #
 
@@ -6,7 +6,7 @@ BASE="$(cd "$(dirname "$0")" && pwd)"
 NAME=$(basename "$0")
 source "$BASE"/bin/conf.inc
 
-[ "$UID" = "0" ] && echo "Sorry, does not run this script as root." && exit 0
+[ "$UID" = "0" ] && echo "Sorry, does not run this script as superuser." && exit 0
 
 mkdir -p "$installDir" "$logDir"
 echo "$0 $@" > "$LOG"
@@ -67,9 +67,11 @@ trap quit ERR
 [ -z "$EMACS" ] && ( $checkEmacs || leave "Install emacs before running this script. \n\ 
 Or use this script to build the developper version of emacs ( $0 --help )." 0 )
 
-msg "Initialization; please wait... "
-$installDep $EMACS $WITH_X "$EMACSPEAK_RELEASE"
+rm -f "$DEP"
+$getDep $EMACS $WITH_X "$EMACSPEAK_RELEASE"
+[ -e "$DEP" ] && leave "Some dependencies are lacking. Please run as super user:\n bin/installDep.sh" 0  
 
+msg "Initialization; please wait... "
 if [ -n "$EMACS" ]; then
 	msg "Downloading emacs... "
 	downloadFromGit $workDir/emacs $GIT_EMACS_URL
