@@ -1,3 +1,5 @@
+# set $BASE before using this script
+#
 PN=emacspeak_voxin_install
 
 # PV: default emacspeak version 
@@ -14,7 +16,7 @@ SERVER=outloud
 TCLX_AUR=https://aur.archlinux.org/cgit/aur.git/snapshot/tclx.tar.gz
 LOG=$logDir/install.$(date -Iseconds)
 DEP=$workDir/dep.txt
-LIST_DEB="autoconf build-essential libespeak-dev libasound2-plugins libasound2-dev texinfo tcl8.6-dev tclx8.4 libncurses5-dev libxml2-dev liblcms2-2 libgnutls28-dev"
+LIST_EMACSPEAK_DEB="libespeak-dev libasound2-plugins tcl8.6-dev tclx8.4"
 
 ###
 gitDownloadDevelopperVersion() {
@@ -98,13 +100,6 @@ archGetDep() {
 
 
 	#TODO emacs dependencies
-	# if [ -n "$withEmacs" ]; then
-	# 	local suffix
-	# 	[ "$with_X" = "0" ] && suffix=-nox
-	# 	apt-get -y build-dep emacs$suffix
-	# 	apt-get -y install git  &>> "$LOG" || true
-	# fi
-	
 }
 
 # debian based specific commands
@@ -124,7 +119,7 @@ debianGetDep() {
 	local withEmacs=$1
 	local with_X=$2
 	local emacspeakRelease=$3
-	local list="$LIST_DEB"
+	local list="$LIST_EMACSPEAK_DEB"
 
 	if [ "$emacspeakRelease" = "latest" ] || [ -n "$withEmacs" ]; then
 		list="$list git"
@@ -133,13 +128,17 @@ debianGetDep() {
 	if [ -n "$withEmacs" ]; then
 		local suffix
 		[ "$with_X" = "0" ] && suffix=-nox
-		list="$list emacs$suffix"
+
+		# obtain the build dependencies required by the current emacs version
+		local emacsVersion=$(apt-cache pkgnames | grep -E "^emacs[0-9]+$" | sed 's/emacs//' | sort -n | tail -1 )		
+		
+		list="$list git"
+		list="$list $(apt-get -s build-dep emacs${emacsVersion}${suffix} | grep "^  [^ ]")"
+		list="$list $(apt-cache depends emacs${emacsVersion}${suffix} | awk '/Depends/{print $2}')"
+		for i in $list; do
+			( dpkg -s "$i" || echo -n " $i" >> "$DEP" ) &>> "$LOG"
+		done
 	fi
-
-	for i in $list; do
-		( dpkg -l | grep "$i" || echo -n " $i" >> "$DEP" ) &>> "$LOG"
-	done
-
 }
 
 usage() {

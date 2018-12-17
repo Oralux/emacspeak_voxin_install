@@ -1,8 +1,9 @@
-#!/bin/bash -vx
+#!/bin/bash
+
+cd "$(dirname "$0")" && BASE=$(dirname "$PWD")
 
 source conf.inc
 
-BASE="$(cd "$(dirname "$0")" && pwd)"
 workDir=$(mktemp -d)
 DEST=$workDir/$PN-$PV-$REL
 SRC=..

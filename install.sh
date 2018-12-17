@@ -2,13 +2,15 @@
 # 2016-2018, Gilles Casse <gcasse@oralux.org>
 #
 
-BASE="$(cd "$(dirname "$0")" && pwd)"
+cd "$(dirname "$0")" && BASE=$PWD
 NAME=$(basename "$0")
-source "$BASE"/bin/conf.inc
+
+source bin/conf.inc
 
 [ "$UID" = "0" ] && echo "Sorry, does not run this script as superuser." && exit 0
 
 mkdir -p "$installDir" "$logDir"
+rm -f $logDir/install.*
 echo "$0 $@" > "$LOG"
 
 unset CLEAN EMACS HELP emacspeakDir
@@ -69,9 +71,11 @@ Or use this script to build the developper version of emacs ( $0 --help )." 0 )
 
 rm -f "$DEP"
 $getDep $EMACS $WITH_X "$EMACSPEAK_RELEASE"
-[ -e "$DEP" ] && leave "Some dependencies are lacking. Please run as super user:\n bin/installDep.sh" 0  
+[ -e "$DEP" ] && leave "Some dependencies are lacking. Please run as superuser:\n bin/installDep.sh" 0  
 
 msg "Initialization; please wait... "
+msg "Log file: $LOG"
+
 if [ -n "$EMACS" ]; then
 	msg "Downloading emacs... "
 	downloadFromGit $workDir/emacs $GIT_EMACS_URL
