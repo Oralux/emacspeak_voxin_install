@@ -71,7 +71,7 @@ Or use this script to build the developper version of emacs ( $0 --help )." 0 )
 
 rm -f "$DEP"
 $getDep $EMACS $WITH_X "$EMACSPEAK_RELEASE"
-[ -e "$DEP" ] && leave "Some dependencies are lacking. Please run as superuser:\n bin/installDep.sh" 0  
+[ -e "$DEP" ] && leave "Some dependencies are lacking. Please run as superuser:\n bin/installDep.sh\nThe missing dependencies are listed in build/dep.txt" 0  
 
 msg "Initialization; please wait... "
 msg "Log file: $LOG"
@@ -93,6 +93,9 @@ if [ "$EMACSPEAK_RELEASE" = "latest" ]; then
 else
 	downloadEmacspeakArchive $workDir $EMACSPEAK_RELEASE
 fi
+
+# emacs is needed to build emacspeak
+export PATH=$BASE/build/install/bin:$PATH
 
 msg "Building emacspeak... "
 emacspeakDir="$workDir/emacspeak-$EMACSPEAK_RELEASE"

@@ -9,35 +9,34 @@ GIT_EMACSPEAK_URL=https://github.com/tvraman/emacspeak.git
 GIT_EMACS_URL=https://github.com/mirrors/emacs.git
 archivesDir=$BASE/archives
 workDir=$BASE/build
-#installDir=$workDir/install/emacspeak-$PV
 installDir=$workDir/install
 logDir=$BASE/log
 SERVER=outloud
 TCLX_AUR=https://aur.archlinux.org/cgit/aur.git/snapshot/tclx.tar.gz
 LOG=$logDir/install.$(date -Iseconds)
 DEP=$workDir/dep.txt
-LIST_EMACSPEAK_DEB="libespeak-dev libasound2-plugins tcl8.6-dev tclx8.4"
+LIST_EMACSPEAK_DEB="alsa-utils curl fil-plugins graphicsmagick-imagemagick-compat invada-studio-plugins-ladspa ladspa-foo-plugins ladspa-sdk libasound2-plugins libespeak-dev libsox-fmt-mp3 liquidsoap-plugin-ladspa mcp-plugins mplayer nodejs phantomjs pianobar rev-plugins sox sqlite3 swh-plugins tap-plugins tcl8.6-dev tclx8.4 unzip vco-plugins wah-plugins wget xbacklight youtube-dl zam-plugins"
 
 ###
 gitDownloadDevelopperVersion() {
 	# download only the last commit to reduce size
 	local dir=$1
 	local url=$2	
-	git -C "$dir" clone --depth 1 "$url" &>> "$LOG"
+	git -C "$dir" clone --depth 1 "$url" | tee -a "$LOG"
 }
 
 gitUpdateLocalCopy() {
         local dir=$1
         if [ -d "$dir" ]; then
-          git -C "$dir" fetch --depth 1 &>> "$LOG"
-          git -C "$dir" reset --hard origin/master &>> "$LOG"
-          git -C "$dir" clean -dfx &>> "$LOG"
+          git -C "$dir" fetch --depth 1 | tee -a "$LOG"
+          git -C "$dir" reset --hard origin/master | tee -a "$LOG"
+          git -C "$dir" clean -dfx | tee -a "$LOG"
         fi
 }
 
 gitCleanLocalCopy() {
 	local dir=$1
-	[ ! -d "$dir" ] || git -C "$dir" clean -xdf &>> "$LOG"
+	[ ! -d "$dir" ] || git -C "$dir" clean -xdf | tee -a "$LOG"
 }
 
 checkDistro()
@@ -88,7 +87,7 @@ archGetDep() {
 	local with_X=$2
 
     pacman -Syu
-    pacman --noconfirm -S base-devel wget texinfo alsa-lib alsa-plugins tcl tk &>> "$LOG"
+    pacman --noconfirm -S base-devel wget texinfo alsa-lib alsa-plugins tcl tk  | tee -a "$LOG"
      
     #tclx
     # cd $workDir
@@ -96,7 +95,7 @@ archGetDep() {
     # tar -zxf tclx
     # makepkg -s
     # cd ..
-    pacman --noconfirm -U $archivesDir/tclx-*-$(uname -m).pkg.tar.xz &>> "$LOG"
+    pacman --noconfirm -U $archivesDir/tclx-*-$(uname -m).pkg.tar.xz  | tee -a "$LOG"
 
 
 	#TODO emacs dependencies
@@ -135,9 +134,19 @@ debianGetDep() {
 		list="$list git"
 		list="$list $(apt-get -s build-dep emacs${emacsVersion}${suffix} | grep "^  [^ ]")"
 		list="$list $(apt-cache depends emacs${emacsVersion}${suffix} | awk '/Depends/{print $2}')"
+		local listmin
 		for i in $list; do
-			( dpkg -s "$i" || echo -n " $i" >> "$DEP" ) &>> "$LOG"
+			dpkg -s "$i" &>/dev/null
+			if [ $? != 0 ] && [ $i != libc6 ]; then
+				# does package exist?
+				local x=$(apt-cache search "^$i$" | wc -c)
+				[ "$x" != 0 ] && listmin="$listmin $i"
+			fi
 		done
+		if [ -n "$listmin" ]; then
+			echo -n " $listmin" >> "$DEP"
+			echo -n "listmin=$listmin" | tee -a "$LOG"
+		fi
 	fi
 }
 
@@ -195,11 +204,11 @@ buildEmacs() {
 		flags="$flags --with-x=no --without-gsettings"
 	fi   
 	
-	./autogen.sh | tee -a "$LOG"
-	./configure $flags | tee -a "$LOG"
-	make bootstrap &>> "$LOG"
-	make &>> "$LOG"
-	make install &>> "$LOG"
+	./autogen.sh  | tee -a "$LOG"
+	./configure $flags  | tee -a "$LOG"
+	make bootstrap  | tee -a "$LOG"
+	make  | tee -a "$LOG"
+	make install | tee -a "$LOG"
 	emacsAlias="alias emacs=\"$installDir/bin/emacs\""
 	popd
 }
@@ -211,7 +220,7 @@ downloadEmacspeakArchive() {
 	pushd "$dir" > /dev/null
 	if [ ! -e "emacspeak-$version.tar.bz2" ]; then
 		local url="https://github.com/tvraman/emacspeak/releases/download/$version/emacspeak-$version.tar.bz2"
-		wget "$url" &>> "$LOG"
+		wget "$url" | tee -a "$LOG"
 	fi
 	
 	if [ -e "emacspeak-$version" ]; then
@@ -279,13 +288,13 @@ buildEmacspeak() {
 
 	pushd "$dir" > /dev/null
 	emacspeakDir=$PWD
-	make config &>> "$LOG"
-	make &>> "$LOG"
+	make config  | tee -a "$LOG"
+	make  | tee -a "$LOG"
 	if [ "$voxinFound" = "1" ]; then
-		make outloud &>> "$LOG"
+		make outloud | tee -a "$LOG"
 	fi
 	if [ "$espeakFound" = "1" ]; then
-		make espeak &>> "$LOG"
+		make espeak | tee -a "$LOG"
 	fi
 	
 	chmod -R ugo+rX .
