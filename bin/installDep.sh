@@ -13,10 +13,10 @@ echo "Updating system. Please wait...
 Log file: $LOG
 "
 
-apt-get update | tee -a "$LOG"
+DEBIAN_FRONTEND=noninteractive apt-get update | tee -a "$LOG"
 
 for i in $(cat "$DEP"); do
-    apt-get -y install $i | tee -a "$LOG"
+    DEBIAN_FRONTEND=noninteractive apt-get -y install $i | tee -a "$LOG"
 done
 
 echo "Update completed.

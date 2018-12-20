@@ -69,9 +69,8 @@ trap quit ERR
 [ -z "$EMACS" ] && ( $checkEmacs || leave "Install emacs before running this script. \n\ 
 Or use this script to build the developper version of emacs ( $0 --help )." 0 )
 
-rm -f "$DEP"
 $getDep $EMACS $WITH_X "$EMACSPEAK_RELEASE" "$espeakFound" "$voxinFound"
-[ -e "$DEP" ] && leave "Some dependencies are lacking. Please run as superuser:\n bin/installDep.sh\nThe missing dependencies are listed in build/dep.txt" 0  
+[ -e "$DEP" ] && leave "There are missing dependencies. Please run as superuser:\n bin/installDep.sh\nThe missing dependencies are listed in build/dep.txt" 0  
 
 msg "Initialization; please wait... "
 msg "Log file: $LOG"

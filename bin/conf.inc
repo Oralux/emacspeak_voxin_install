@@ -115,6 +115,16 @@ debianCheckEspeak() {
     dpkg -l | grep libespeak &> /dev/null    
 }
 
+debianIsPackageInstalled() {
+	local deb=$1
+	grep -A1 "Package: $deb$" /var/lib/dpkg/status | grep "Status: install ok installed"
+}
+
+debianDoesPackageExist() {
+	local deb=$1
+	grep "Package: $deb$" /var/lib/apt/lists/*_Packages
+}
+
 debianGetDep() {
 	local withEmacs=$1
 	local with_X=$2
@@ -123,17 +133,17 @@ debianGetDep() {
 	local voxinFound=$5
 	
 	local list="$LIST_EMACSPEAK_DEB_MUST"
-	local listmin
 	local x
+	local y
 
+	unlink "$DEP" &> /dev/null
+	
 	if [ "$espeakFound" = "0" ] && [ "$voxinFound" = "0" ]; then
-		listmin=espeak
-		x=$(apt-cache search "^espeak-ng$" | wc -c)
-		[ "$x" != 0 ] && listmin=espeak-ng
+		x=espeak
+		debianDoesPackageExist espeak-ng && x=espeak-ng
+		list="$list $x"
 	fi
 
-	list="$list $listmin"
-	
 	if [ "$emacspeakRelease" = "latest" ] || [ -n "$withEmacs" ]; then
 		list="$list git"
 	fi
@@ -144,62 +154,38 @@ debianGetDep() {
 		# obtain the build dependencies required by the current emacs version
 		local emacsVersion=$(apt-cache pkgnames | grep -E "^emacs[0-9]+$" | sed 's/emacs//' | sort -n | tail -1 )		
 		
-		list="$list git"
-		apt-get -s build-dep emacs${emacsVersion}${x}
+		apt-get -s build-dep emacs${emacsVersion}${x} &> /dev/null
 		if [ $? != 0 ]; then
-			echo "Build dependencies of emacs${emacsVersion}${x} Package $i can't be found.
-Possible cause:
-- Your list of authorized repositories must be extended.
-  You probably have to enable the src repositories.
-  Check your /etc/apt/sources.list
-  and run apt-get update after any modification
-"  | tee -a "$LOG"
+			echo "The build dependencies of emacs${emacsVersion}${x} can't be found.
+Your list of authorized repositories should probably be extended.
+You would have to uncomment the deb-src lines in your
+/etc/apt/sources.list and run apt-get update after any modification
+" | tee -a "$LOG"
 			exit 1
 		fi		
 		list="$list $(apt-get -s build-dep emacs${emacsVersion}${x} | grep "^  [^ ]")"
 		list="$list $(apt-cache depends emacs${emacsVersion}${x} | awk '/Depends/{print $2}')"
 	fi
 
-	# check the presence of the "must have" dependencies
-	unset listmin
+	# find which "must have" dependency is not yet installed
+	unset x
 	for i in $list; do
-		dpkg -s "$i" &> /dev/null
-		if [ $? != 0 ] && [ $i != libc6 ]; then
-			# is "$i" a package name?
-			x=$(echo "$i" | sed "s/\+/\\\+/g")
-			x=$(apt-cache search "^$x$" | wc -c)
-			if [ "$x" != 0 ]; then
-				listmin="$listmin $i"
-			else
-				echo "Package $i can't be found.
-Possible causes:
-- Your list of authorized debian/ubuntu repositories must be extended.
-  For example, for ubuntu server, you may have to enable the src directories.
-  Check your /etc/apt/sources.list
-  and run apt-get update after any modification
-
-- if this package can't be found in your distribution then report this issue at contact at oralux.org
-"  | tee -a "$LOG"
-				exit 1
-			fi
-		fi
+		debianIsPackageInstalled "$i" || x="$x $i"
 	done
 
 	# add possibly the "nice to have" dependencies
 	for i in $LIST_EMACSPEAK_DEB_MIGHT; do
-		dpkg -s "$i" &>/dev/null
+		debianIsPackageInstalled "$i"
 		if [ $? != 0 ]; then
-			# is "$i" a package name?
-			x=$(apt-cache search "^$i$" | wc -c)
-			[ "$x" != 0 ] && listmin="$listmin $i"
+			debianDoesPackageExist "$i" && x="$x $i"
 		fi
 	done
 
-	# store list
-	echo "list: $listmin" >> "$LOG"
-	for i in $listmin; do
-		echo -n " $i" >> "$DEP"
-	done	
+	y=$(echo -n "$x" | wc -w)
+	if [ "$y" != "0" ]; then
+		echo "$y Packages to install: $x" >> "$LOG"
+		echo "$x" > "$DEP"
+	fi
 }
 
 usage() {
