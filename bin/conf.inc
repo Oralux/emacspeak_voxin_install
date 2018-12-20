@@ -4,7 +4,7 @@ PN=emacspeak_voxin_install
 
 # PV: default emacspeak version 
 PV=49.0
-REL=4
+REL=5
 GIT_EMACSPEAK_URL=https://github.com/tvraman/emacspeak.git
 GIT_EMACS_URL=https://github.com/mirrors/emacs.git
 archivesDir=$BASE/archives
@@ -15,7 +15,8 @@ SERVER=outloud
 TCLX_AUR=https://aur.archlinux.org/cgit/aur.git/snapshot/tclx.tar.gz
 LOG=$logDir/install.$(date -Iseconds)
 DEP=$workDir/dep.txt
-LIST_EMACSPEAK_DEB="alsa-utils curl fil-plugins graphicsmagick-imagemagick-compat invada-studio-plugins-ladspa ladspa-foo-plugins ladspa-sdk libasound2-plugins libespeak-dev libsox-fmt-mp3 liquidsoap-plugin-ladspa mcp-plugins mplayer nodejs phantomjs pianobar rev-plugins sox sqlite3 swh-plugins tap-plugins tcl8.6-dev tclx8.4 unzip vco-plugins wah-plugins wget xbacklight youtube-dl zam-plugins"
+LIST_EMACSPEAK_MUST="alsa-utils libasound2-plugins libespeak-dev libsox-fmt-mp3 sox tcl8.6-dev tclx8.4"
+LIST_EMACSPEAK_NICE="curl fil-plugins graphicsmagick-imagemagick-compat invada-studio-plugins-ladspa ladspa-foo-plugins ladspa-sdk  liquidsoap-plugin-ladspa mcp-plugins mplayer nodejs phantomjs pianobar rev-plugins sqlite3 swh-plugins tap-plugins unzip vco-plugins wah-plugins wget xbacklight youtube-dl zam-plugins"
 
 ###
 gitDownloadDevelopperVersion() {
@@ -118,36 +119,87 @@ debianGetDep() {
 	local withEmacs=$1
 	local with_X=$2
 	local emacspeakRelease=$3
-	local list="$LIST_EMACSPEAK_DEB"
+	local espeakFound=$4
+	local voxinFound=$5
+	
+	local list="$LIST_EMACSPEAK_DEB_MUST"
+	local listmin
+	local x
 
+	if [ "$espeakFound" = "0" ] && [ "$voxinFound" = "0" ]; then
+		listmin=espeak
+		x=$(apt-cache search "^espeak-ng$" | wc -c)
+		[ "$x" != 0 ] && listmin=espeak-ng
+	fi
+
+	list="$list $listmin"
+	
 	if [ "$emacspeakRelease" = "latest" ] || [ -n "$withEmacs" ]; then
 		list="$list git"
 	fi
 
 	if [ -n "$withEmacs" ]; then
-		local suffix
-		[ "$with_X" = "0" ] && suffix=-nox
+		[ "$with_X" = "0" ] && x=-nox
 
 		# obtain the build dependencies required by the current emacs version
 		local emacsVersion=$(apt-cache pkgnames | grep -E "^emacs[0-9]+$" | sed 's/emacs//' | sort -n | tail -1 )		
 		
 		list="$list git"
-		list="$list $(apt-get -s build-dep emacs${emacsVersion}${suffix} | grep "^  [^ ]")"
-		list="$list $(apt-cache depends emacs${emacsVersion}${suffix} | awk '/Depends/{print $2}')"
-		local listmin
-		for i in $list; do
-			dpkg -s "$i" &>/dev/null
-			if [ $? != 0 ] && [ $i != libc6 ]; then
-				# does package exist?
-				local x=$(apt-cache search "^$i$" | wc -c)
-				[ "$x" != 0 ] && listmin="$listmin $i"
-			fi
-		done
-		if [ -n "$listmin" ]; then
-			echo -n " $listmin" >> "$DEP"
-			echo -n "listmin=$listmin" | tee -a "$LOG"
-		fi
+		apt-get -s build-dep emacs${emacsVersion}${x}
+		if [ $? != 0 ]; then
+			echo "Build dependencies of emacs${emacsVersion}${x} Package $i can't be found.
+Possible cause:
+- Your list of authorized repositories must be extended.
+  You probably have to enable the src repositories.
+  Check your /etc/apt/sources.list
+  and run apt-get update after any modification
+"  | tee -a "$LOG"
+			exit 1
+		fi		
+		list="$list $(apt-get -s build-dep emacs${emacsVersion}${x} | grep "^  [^ ]")"
+		list="$list $(apt-cache depends emacs${emacsVersion}${x} | awk '/Depends/{print $2}')"
 	fi
+
+	# check the presence of the "must have" dependencies
+	unset listmin
+	for i in $list; do
+		dpkg -s "$i" &> /dev/null
+		if [ $? != 0 ] && [ $i != libc6 ]; then
+			# is "$i" a package name?
+			x=$(echo "$i" | sed "s/\+/\\\+/g")
+			x=$(apt-cache search "^$x$" | wc -c)
+			if [ "$x" != 0 ]; then
+				listmin="$listmin $i"
+			else
+				echo "Package $i can't be found.
+Possible causes:
+- Your list of authorized debian/ubuntu repositories must be extended.
+  For example, for ubuntu server, you may have to enable the src directories.
+  Check your /etc/apt/sources.list
+  and run apt-get update after any modification
+
+- if this package can't be found in your distribution then report this issue at contact at oralux.org
+"  | tee -a "$LOG"
+				exit 1
+			fi
+		fi
+	done
+
+	# add possibly the "nice to have" dependencies
+	for i in $LIST_EMACSPEAK_DEB_MIGHT; do
+		dpkg -s "$i" &>/dev/null
+		if [ $? != 0 ]; then
+			# is "$i" a package name?
+			x=$(apt-cache search "^$i$" | wc -c)
+			[ "$x" != 0 ] && listmin="$listmin $i"
+		fi
+	done
+
+	# store list
+	echo "list: $listmin" >> "$LOG"
+	for i in $listmin; do
+		echo -n " $i" >> "$DEP"
+	done	
 }
 
 usage() {

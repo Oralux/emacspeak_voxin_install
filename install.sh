@@ -62,7 +62,7 @@ fi
 
 [ -n "$CLEAN" ] && clean
 
-[ "$voxinFound" = "0" ] && [ "$espeakFound" = "0" ] && leave "Install voxin or espeak before running this script." 0
+#[ "$voxinFound" = "0" ] && [ "$espeakFound" = "0" ] && leave "Install voxin or espeak before running this script." 0
 
 trap quit ERR
 
@@ -70,7 +70,7 @@ trap quit ERR
 Or use this script to build the developper version of emacs ( $0 --help )." 0 )
 
 rm -f "$DEP"
-$getDep $EMACS $WITH_X "$EMACSPEAK_RELEASE"
+$getDep $EMACS $WITH_X "$EMACSPEAK_RELEASE" "$espeakFound" "$voxinFound"
 [ -e "$DEP" ] && leave "Some dependencies are lacking. Please run as superuser:\n bin/installDep.sh\nThe missing dependencies are listed in build/dep.txt" 0  
 
 msg "Initialization; please wait... "
