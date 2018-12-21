@@ -100,15 +100,26 @@ msg "Building emacspeak... "
 emacspeakDir="$workDir/emacspeak-$EMACSPEAK_RELEASE"
 buildEmacspeak "$emacspeakDir"
 
+msg "\n# These instructions can be retrieved at the end of the log file: $LOG"
+msg "\n\n# Configuration\n"
+
+case $(getent group audio) in
+	*:$USER|*:$USER:*) ;;
+	*)
+		msg "\n# You may want to add $USER to the audio group.\n Type for example as superuser:"
+		msg "usermod -aG audio $USER\n"
+	;;
+esac
+
 if [ -n "$emacsAlias" ]; then
 	msg "
-To call your local emacs, add this alias to your shell initialization file (for example ~/.bashrc) 
+# To call your local emacs, add this alias to your shell initialization file (for example ~/.bashrc) 
 "
 	msg "$emacsAlias"
 fi
 
 msg "
-To run this Emacspeak build, add the following lines to the top of your emacs init file (e.g. in  ~/.emacs ); then, start emacs
+;; To run this Emacspeak build, add the following lines to the top of your emacs init file (e.g. in  ~/.emacs ); then, start emacs
 " 
 
 if [ -n "$DTK" ]; then
@@ -116,5 +127,4 @@ if [ -n "$DTK" ]; then
 fi
 msg "(load-file \"$emacspeakDir/lisp/emacspeak-setup.el\")"
 
-msg "\nThese instructions can be retrieved at the end of the log file: $LOG"
 

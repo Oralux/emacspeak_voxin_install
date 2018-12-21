@@ -117,12 +117,12 @@ debianCheckEspeak() {
 
 debianIsPackageInstalled() {
 	local deb=$1
-	grep -A1 "Package: $deb$" /var/lib/dpkg/status | grep "Status: install ok installed"
+	grep -A1 "Package: $deb$" /var/lib/dpkg/status | grep "Status: install ok installed" &> /dev/null
 }
 
 debianDoesPackageExist() {
 	local deb=$1
-	grep "Package: $deb$" /var/lib/apt/lists/*_Packages
+	grep "Package: $deb$" /var/lib/apt/lists/*_Packages &> /dev/null
 }
 
 debianGetDep() {
