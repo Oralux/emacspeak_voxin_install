@@ -132,7 +132,7 @@ debianGetDep() {
 	local espeakFound=$4
 	local voxinFound=$5
 	
-	local list="$LIST_EMACSPEAK_DEB_MUST"
+	local list="$LIST_EMACSPEAK_MUST"
 	local x
 	local y
 
@@ -174,7 +174,7 @@ You would have to uncomment the deb-src lines in your
 	done
 
 	# add possibly the "nice to have" dependencies
-	for i in $LIST_EMACSPEAK_DEB_MIGHT; do
+	for i in $LIST_EMACSPEAK_NICE; do
 		debianIsPackageInstalled "$i"
 		if [ $? != 0 ]; then
 			debianDoesPackageExist "$i" && x="$x $i"

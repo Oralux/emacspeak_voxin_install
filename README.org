@@ -9,6 +9,9 @@ This installer may also help to build:
 - emacs or emacspeak from the sources in development (git HEAD).
 See paragraph 'Usage' for more details.
 
+At the end of the build process, you will have to update your emacs or bash initfile.
+The instructions are displayed on the console when the build is achieved and copied at the end of the log file named log/install.xxx .
+
 * Build emacspeak 49.0
 To download and build emacspeak 49.0, just type as a non-root user in
 a terminal:
@@ -17,7 +20,7 @@ a terminal:
 The proposed instruction to launch emacspeak will be displayed at the
 end of the script.
 
-* Emacs init file 
+* Emacs init file for emacspeak
 In summary, update your emacs init file then start emacs.
 
 For memo, the emacs init file is one of these three files:
@@ -39,6 +42,14 @@ outloud before calling load-file:
 
 (setenv "DTK_PROGRAM" "outloud")
 (load-file "/home/user1/emacspeak_voxin_install/build/emacspeak-49.0/lisp/emacspeak-setup.el")
+
+* alias to launch you locally build emacs
+If you used this installer to build emacs from git, then you may want to add an emacs alias in your ~/.bashrc file to point to your local emacs binary. 
+For example:
+alias emacs="installDir/bin/emacs"
+
+where install dir is the whole path pointing to the emacs directory.
+This alias is indicated at the end of the log file (log/install.xxx.log)
 
 
 * Usage
