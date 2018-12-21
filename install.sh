@@ -100,31 +100,28 @@ msg "Building emacspeak... "
 emacspeakDir="$workDir/emacspeak-$EMACSPEAK_RELEASE"
 buildEmacspeak "$emacspeakDir"
 
-msg "\n# These instructions can be retrieved at the end of the log file: $LOG"
-msg "\n\n# Configuration\n"
 
+msg "
+# Configuration"
+# These instructions are copied at the end of log/install.*"
 case $(getent group audio) in
-	*:$USER|*:$USER:*) ;;
-	*)
-		msg "\n# You may want to add $USER to the audio group.\n Type for example as superuser:"
-		msg "usermod -aG audio $USER\n"
-	;;
+        *:$USER|*:$USER:*) ;;
+        *)
+                msg "# To add user $USER to the audio group, type as superuser:"
+                msg "usermod -aG audio $USER"
+        ;;
 esac
 
 if [ -n "$emacsAlias" ]; then
-	msg "
-# To call your local emacs, add this alias to your shell initialization file (for example ~/.bashrc) 
-"
-	msg "$emacsAlias"
+        msg "# Add this alias to ~/.bashrc:
+$emacsAlias"
 fi
 
-msg "
-;; To run this Emacspeak build, add the following lines to the top of your emacs init file (e.g. in  ~/.emacs ); then, start emacs
-" 
+msg "# Add these lines to the top of your emacs init file (e.g. in  ~/.emacs )"
 
 if [ -n "$DTK" ]; then
-	msg '(setenv "DTK_PROGRAM" "outloud")'
+        msg '(setenv "DTK_PROGRAM" "outloud")'
 fi
 msg "(load-file \"$emacspeakDir/lisp/emacspeak-setup.el\")"
-
+msg "# Now you may want to reboot yous system, before launching emacs"
 
