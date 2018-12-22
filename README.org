@@ -41,7 +41,9 @@ In summary, update your emacs init file then start emacs.
 
 For memo, the emacs init file is one of these three files:
 ~/.emacs
+
 ~/.emacs.el
+
 ~/.emacs.d/init.el
 
 
@@ -56,13 +58,18 @@ Then emacspeak will use espeak by default.
 For using voxin, you may set the DTK_PROGRAM variable to
 outloud before calling load-file:
 
+#+BEGIN_EXAMPLE
 (setenv "DTK_PROGRAM" "outloud")
 (load-file "/home/user1/emacspeak_voxin_install/build/emacspeak-49.0/lisp/emacspeak-setup.el")
+#+END_EXAMPLE
 
 * alias to launch your locally build emacs
 If you used this installer to build emacs from git, then you may want to add an emacs alias in your ~/.bashrc file to point to your local emacs binary. 
+
 For example:
+#+BEGIN_EXAMPLE
 alias emacs="installDir/bin/emacs"
+#+END_EXAMPLE
 
 where install dir is the whole path pointing to the emacs directory.
 This alias is indicated at the end of the log file (log/install.*)
@@ -70,6 +77,7 @@ This alias is indicated at the end of the log file (log/install.*)
 * Usage
 
 The following information are copied from:
+
 ./install.sh -h
 
 
@@ -80,6 +88,8 @@ can be selected.
 
 Optionally the developer version of emacs (git HEAD) can be
 downloaded and built with or without X support.
+
+#+BEGIN_EXAMPLE
 
 OPTIONS
 -c, --clean            clean all: delete the build, install directories and log file
@@ -105,4 +115,4 @@ EXAMPLES
 # build emacspeak from the currently developed sources (git HEAD)
  ./install.sh --release latest
 
-
+#+END_EXAMPLE
