@@ -1,3 +1,4 @@
+#+OPTIONS: \n:t
 This installer builds by default emacspeak 49.0 with espeak or voxin
 and works currently on Ubuntu 18.04.
 
@@ -19,14 +20,13 @@ For example, for retrieving these instructions in a console, type:
 Then this kind of text should be displayed:
 
 # Configuration
-# These instructions are copied at the end of log/install.*
 # Add this alias to ~/.bashrc:
 alias emacs="/home/user1/emacspeak_voxin_install-49.0-5/build/install/bin/emacs"
 # Add these lines to the top of your emacs init file (e.g. in  ~/.emacs )
 (setenv "DTK_PROGRAM" "outloud")
 (load-file "/lisp/emacspeak-setup.el")
 # Now you may want to reboot, before launching emacs
-
+# These instructions are copied at the end of log/install.*
 
 * Build emacspeak 49.0
 To download and build emacspeak 49.0, just type as a non-root user in
@@ -46,7 +46,7 @@ For memo, the emacs init file is one of these three files:
 
 
 For example, if you have installed emacspeak_voxin_install in the
-/home/user1 directory, the instruction to add at the beginnong of your
+/home/user1 directory, the instruction to add at the beginning of your
 emacs init file is:
 
 (load-file "/home/user1/emacspeak_voxin_install/build/emacspeak-49.0/lisp/emacspeak-setup.el")
@@ -59,13 +59,13 @@ outloud before calling load-file:
 (setenv "DTK_PROGRAM" "outloud")
 (load-file "/home/user1/emacspeak_voxin_install/build/emacspeak-49.0/lisp/emacspeak-setup.el")
 
-* alias to launch you locally build emacs
+* alias to launch your locally build emacs
 If you used this installer to build emacs from git, then you may want to add an emacs alias in your ~/.bashrc file to point to your local emacs binary. 
 For example:
 alias emacs="installDir/bin/emacs"
 
 where install dir is the whole path pointing to the emacs directory.
-This alias is indicated at the end of the log file (log/install.xxx.log)
+This alias is indicated at the end of the log file (log/install.*)
 
 * Usage
 
