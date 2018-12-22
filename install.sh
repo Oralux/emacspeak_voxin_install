@@ -104,7 +104,7 @@ buildEmacspeak "$emacspeakDir"
 
 msg "
 # Configuration"
-# These instructions are copied at the end of log/install.*"
+
 case $(getent group audio) in
         *:$USER|*:$USER:*) ;;
         *)
@@ -124,5 +124,7 @@ if [ -n "$DTK" ]; then
         msg '(setenv "DTK_PROGRAM" "outloud")'
 fi
 msg "(load-file \"$emacspeakDir/lisp/emacspeak-setup.el\")"
-msg "# Now you may want to reboot yous system, before launching emacs"
 
+msg "# Now you may want to reboot your system, before launching emacs"
+
+msg "# These instructions are copied at the end of log/install.*"
