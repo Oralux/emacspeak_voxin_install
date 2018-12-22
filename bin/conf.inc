@@ -15,8 +15,8 @@ SERVER=outloud
 TCLX_AUR=https://aur.archlinux.org/cgit/aur.git/snapshot/tclx.tar.gz
 LOG=$logDir/install.$(date -Iseconds)
 DEP=$workDir/dep.txt
-LIST_EMACSPEAK_MUST="alsa-utils libasound2-plugins libespeak-dev libsox-fmt-mp3 sox tcl8.6-dev tclx8.4"
-LIST_EMACSPEAK_NICE="curl fil-plugins graphicsmagick-imagemagick-compat invada-studio-plugins-ladspa ladspa-foo-plugins ladspa-sdk  liquidsoap-plugin-ladspa mcp-plugins mplayer nodejs phantomjs pianobar rev-plugins sqlite3 swh-plugins tap-plugins unzip vco-plugins wah-plugins wget xbacklight youtube-dl zam-plugins"
+LIST_EMACSPEAK_MUST="alsa-utils libasound2-plugins libespeak-dev libsox-fmt-mp3 sox tcl8.6-dev tclx8.4 libxml2-dev"
+LIST_EMACSPEAK_NICE="curl fil-plugins graphicsmagick-imagemagick-compat invada-studio-plugins-ladspa ladspa-foo-plugins ladspa-sdk liquidsoap-plugin-ladspa mcp-plugins mplayer nodejs phantomjs pianobar rev-plugins sqlite3 swh-plugins tap-plugins unzip vco-plugins wah-plugins wget xbacklight youtube-dl zam-plugins"
 
 ###
 gitDownloadDevelopperVersion() {
@@ -131,10 +131,12 @@ debianGetDep() {
 	local emacspeakRelease=$3
 	local espeakFound=$4
 	local voxinFound=$5
+	local full=$6
 	
 	local list="$LIST_EMACSPEAK_MUST"
 	local x
 	local y
+	local emacsVersion=$(apt-cache pkgnames | grep -E "^emacs[0-9]+$" | sed 's/emacs//' | sort -n | tail -1 )		
 
 	unlink "$DEP" &> /dev/null
 	
@@ -144,16 +146,17 @@ debianGetDep() {
 		list="$list $x"
 	fi
 
-	if [ "$emacspeakRelease" = "latest" ] || [ -n "$withEmacs" ]; then
+	if [ "$emacspeakRelease" = "latest" ] || [ "$withEmacs" = 1 ]; then
 		list="$list git"
 	fi
 
-	if [ -n "$withEmacs" ]; then
-		[ "$with_X" = "0" ] && x=-nox
+	if [ "$withEmacs" = 0 ]; then
+		[ -z "$DISPLAY" ] && x=-nox || unset x		
+		debianIsPackageInstalled emacs${emacsVersion}${x} || list="$list emacs${emacsVersion}${x}"
+	else		
+		[ "$with_X" = "0" ] && x=-nox || unset x
 
 		# obtain the build dependencies required by the current emacs version
-		local emacsVersion=$(apt-cache pkgnames | grep -E "^emacs[0-9]+$" | sed 's/emacs//' | sort -n | tail -1 )		
-		
 		apt-get -s build-dep emacs${emacsVersion}${x} &> /dev/null
 		if [ $? != 0 ]; then
 			echo "The build dependencies of emacs${emacsVersion}${x} can't be found.
@@ -174,12 +177,14 @@ You would have to uncomment the deb-src lines in your
 	done
 
 	# add possibly the "nice to have" dependencies
-	for i in $LIST_EMACSPEAK_NICE; do
-		debianIsPackageInstalled "$i"
-		if [ $? != 0 ]; then
-			debianDoesPackageExist "$i" && x="$x $i"
-		fi
-	done
+	if [ "$full" = 1 ]; then
+		for i in $LIST_EMACSPEAK_NICE; do
+			debianIsPackageInstalled "$i"
+			if [ $? != 0 ]; then
+				debianDoesPackageExist "$i" && x="$x $i"
+			fi
+		done
+	fi
 
 	y=$(echo -n "$x" | wc -w)
 	if [ "$y" != "0" ]; then
@@ -205,6 +210,7 @@ OPTIONS
 -c, --clean            clean all: delete the build, install directories and log file
 -r, --release=version  download the indicated version (e.g. '49.0' or 'latest' for the developer version).
 -e, --emacs            download and build emacs (by default with X support for graphical environment)
+-f, --full             install the full dependencies (ladspa, youtube-dl, nodejs,...)
 -n, --nox              build emacs without X support (for console based environment)
 -h, --help             display this help 
 
@@ -323,9 +329,8 @@ Please review file: $i"
 
 buildEmacspeak() {
 	local dir=$1
-
+	
 	pushd "$dir" > /dev/null
-	emacspeakDir=$PWD
 	make config  | tee -a "$LOG"
 	make  | tee -a "$LOG"
 	if [ "$voxinFound" = "1" ]; then

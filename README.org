@@ -6,7 +6,7 @@ http://voxin.oralux.net
 
 This installer may also help to build:
 - another emacspeak archive,
-- emacs or emacspeak from the sources in development (git HEAD).
+- emacs, emacs-nox or emacspeak from the sources in development (git HEAD).
 See paragraph 'Usage' for more details.
 
 At the end of the build process, you will have to update your emacs or bash initfile.
@@ -85,6 +85,7 @@ OPTIONS
 -c, --clean            clean all: delete the build, install directories and log file
 -r, --release=version  download the indicated version (e.g. '49.0' or 'latest' for the developer version).
 -e, --emacs            download and build emacs (by default with X support for graphical environment)
+-f, --full             install the full dependencies (ladspa, youtube-dl, nodejs,...)
 -n, --nox              build emacs without X support (for console based environment)
 -h, --help             display this help 
 

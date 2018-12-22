@@ -13,10 +13,13 @@ mkdir -p "$installDir" "$logDir"
 rm -f $logDir/install.*
 echo "$0 $@" > "$LOG"
 
-unset CLEAN EMACS HELP emacspeakDir
+CLEAN=0
+EMACS=0
+FULL=0
+HELP=0
 WITH_X=1
 EMACSPEAK_RELEASE=$PV
-OPTIONS=`getopt -o cehnr: --long clean,emacs,help,nox,release: \
+OPTIONS=`getopt -o cefhnr: --long clean,emacs,full,help,nox,release: \
              -n "$NAME" -- "$@"`
 [ $? != 0 ] && usage && exit 1
 eval set -- "$OPTIONS"
@@ -25,6 +28,7 @@ while true; do
   case "$1" in
     -c|--clean) CLEAN=1; shift;;
     -e|--emacs) EMACS=1; shift;;
+    -f|--full) FULL=1; shift;;
     -h|--help) HELP=1; shift;;
     -n|--nox) EMACS=1; WITH_X=0; shift;;
     -r|--release) EMACSPEAK_RELEASE=$2; shift 2;;
@@ -33,7 +37,7 @@ while true; do
   esac
 done
 
-[ -n "$HELP" ] && usage && exit 0
+[ "$HELP" = 1 ] && usage && exit 0
 
 checkDistro
 
@@ -60,22 +64,19 @@ else
     echo "no"
 fi
 
-[ -n "$CLEAN" ] && clean
+[ "$CLEAN" = 1 ] && clean
 
 #[ "$voxinFound" = "0" ] && [ "$espeakFound" = "0" ] && leave "Install voxin or espeak before running this script." 0
 
 trap quit ERR
 
-[ -z "$EMACS" ] && ( $checkEmacs || leave "Install emacs before running this script. \n\ 
-Or use this script to build the developper version of emacs ( $0 --help )." 0 )
-
-$getDep $EMACS $WITH_X "$EMACSPEAK_RELEASE" "$espeakFound" "$voxinFound"
+$getDep $EMACS $WITH_X "$EMACSPEAK_RELEASE" "$espeakFound" "$voxinFound" "$FULL"
 [ -e "$DEP" ] && leave "There are missing dependencies. Please run as superuser:\n bin/installDep.sh\nThe missing dependencies are listed in build/dep.txt" 0  
 
 msg "Initialization; please wait... "
 msg "Log file: $LOG"
 
-if [ -n "$EMACS" ]; then
+if [ "$EMACS" = 1 ]; then
 	msg "Downloading emacs... "
 	downloadFromGit $workDir/emacs $GIT_EMACS_URL
 
@@ -90,7 +91,7 @@ if [ "$EMACSPEAK_RELEASE" = "latest" ]; then
 	downloadFromGit $workDir/emacspeak $GIT_EMACSPEAK_URL
 	[ ! -e "$workDir/emacspeak-$EMACSPEAK_RELEASE" ] && ln -sf emacspeak "$workDir/emacspeak-$EMACSPEAK_RELEASE"
 else
-	downloadEmacspeakArchive $workDir $EMACSPEAK_RELEASE
+	downloadEmacspeakArchive "$workDir" "$EMACSPEAK_RELEASE"
 fi
 
 # emacs is needed to build emacspeak
