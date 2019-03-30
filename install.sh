@@ -39,7 +39,7 @@ done
 
 [ "$HELP" = 1 ] && usage && exit 0
 
-checkDistro
+checkDistro || leave "Sorry, this distribution is not yet supported. For support, email to contact at oralux.org " 1
 
 voxinFound=0
 espeakFound=0

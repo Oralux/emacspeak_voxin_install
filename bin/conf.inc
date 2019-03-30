@@ -12,11 +12,13 @@ workDir=$BASE/build
 installDir=$workDir/install
 logDir=$BASE/log
 SERVER=outloud
-TCLX_AUR=https://aur.archlinux.org/cgit/aur.git/snapshot/tclx.tar.gz
 LOG=$logDir/install.$(date -Iseconds)
 DEP=$workDir/dep.txt
 LIST_EMACSPEAK_MUST="alsa-utils libasound2-plugins libasound2-dev libespeak-dev libsox-fmt-mp3 sox tcl8.6-dev tclx8.4 libxml2-dev"
 LIST_EMACSPEAK_NICE="curl fil-plugins graphicsmagick-imagemagick-compat invada-studio-plugins-ladspa ladspa-foo-plugins ladspa-sdk liquidsoap-plugin-ladspa mcp-plugins mplayer nodejs phantomjs pianobar rev-plugins sqlite3 swh-plugins tap-plugins unzip vco-plugins wah-plugins wget xbacklight youtube-dl zam-plugins"
+
+LIST_EMACSPEAK_MUST_ARCH_LINUX="texinfo alsa-utils alsa-plugins alsa-lib espeak-ng sox tcl tk libxml2"
+LIST_EMACSPEAK_NICE_ARCH_LINUX="curl fil-plugins ladspa-plugins ladspa mcp-plugins mplayer nodejs pianobar rev-plugins sqlite3 swh-plugins tap-plugins unzip vco-plugins wah-plugins wget xbacklight youtube-dl zam-plugins"
 
 ###
 gitDownloadDevelopperVersion() {
@@ -43,16 +45,15 @@ gitCleanLocalCopy() {
 checkDistro()
 {
     local status=1
-
-	# TODO ArchLinux support
-    # # Check if this is an arch linux based distro
-    # if [ -e "/etc/pacman.conf" ]; then
-	# checkEmacs=archCheckEmacs
-	# checkVoxin=archCheckVoxin
-	# checkEspeak=archCheckEspeak
-	# getDep=archInstallDep
-	# status=0
-    # else
+    
+    # Check if this is an arch linux based distro
+    if [ -e "/etc/pacman.conf" ]; then
+	checkEmacs=archCheckEmacs
+	checkVoxin=archCheckVoxin
+	checkEspeak=archCheckEspeak
+	getDep=archGetDep
+	status=0
+    else
 	# Check if this is a debian based distro
 	type dpkg &> /dev/null
 	if [ "$?" = "0" ]; then
@@ -61,12 +62,10 @@ checkDistro()
 	    checkEspeak=debianCheckEspeak
 	    getDep=debianGetDep
 	    status=0
-
-		# TODO Arch??
-		#		https://wiki.archlinux.org/index.php/Pacman/Tips_and_tricks#Getting_the_dependencies_list_of_several_packages
-
+	    # TODO Arch??
+	    #		https://wiki.archlinux.org/index.php/Pacman/Tips_and_tricks#Getting_the_dependencies_list_of_several_packages	    
 	fi
-    # fi
+    fi
     return $status
 }
 
@@ -84,22 +83,48 @@ archCheckEspeak() {
 }
 
 archGetDep() {
-	local withEmacs=$1
-	local with_X=$2
+    local withEmacs=$1
+    local with_X=$2
+    local emacspeakRelease=$3
+    local espeakFound=$4
+    local voxinFound=$5
+    local full=$6    
+    local list="$LIST_EMACSPEAK_MUST_ARCH_LINUX"
+    local x
+    local y
 
-    pacman -Syu
-    pacman --noconfirm -S base-devel wget texinfo alsa-lib alsa-plugins tcl tk  | tee -a "$LOG"
-     
-    #tclx
-    # cd $workDir
-    # wget $TCLX_AUR
-    # tar -zxf tclx
-    # makepkg -s
-    # cd ..
-    pacman --noconfirm -U $archivesDir/tclx-*-$(uname -m).pkg.tar.xz  | tee -a "$LOG"
+    unlink "$DEP" &> /dev/null
 
+    # add possibly the "nice to have" dependencies
+    if [ "$full" = 1 ]; then
+	list="$list $LIST_EMACSPEAK_NICE_ARCH_LINUX"
+    fi
+    
+    if [ "$espeakFound" = "0" ] && [ "$voxinFound" = "0" ]; then
+	list="$list espeak-ng"
+    fi
 
-	#TODO emacs dependencies
+    list="$list base-devel wget texinfo"    
+
+    if [ "$emacspeakRelease" = "latest" ]; then
+	list="$list git"
+    fi
+
+    for i in $list; do
+	archIsPackageInstalled $i || x="$x $i"
+    done
+
+    y=$(echo -n "$x" | wc -w)
+    if [ "$y" != "0" ]; then
+	echo "$y Packages to install: $x" >> "$LOG"
+	echo "$x" > "$DEP"
+    fi        
+}
+
+archIsPackageInstalled() {
+	[ $# != 1 ] || [ -z "$1" ] && return 1
+	local package=$1
+	pacman -Q "$package" &>/dev/null || pacman -Qg "$package" &>/dev/null	
 }
 
 # debian based specific commands
@@ -200,19 +225,21 @@ Usage:
 
 This installer builds emacspeak with espeak or voxin.
 By default, the emacspeak $PV archive is downloaded. 
-But another emacspeak release or even its latest sources from GitHub
-can be selected.
+Another emacspeak release or even its latest sources from GitHub can
+be selected.
 
-Optionally the developer version of emacs (git HEAD) can be
-downloaded and built with or without X support.
+On Debian based distributions, the developer version of emacs (git
+HEAD) can be downloaded and built with or without X support.
 
 OPTIONS
 -c, --clean            clean all: delete the build, install directories and log file
 -r, --release=version  download the indicated version (e.g. '49.0' or 'latest' for the developer version).
--e, --emacs            download and build emacs (by default with X support for graphical environment)
 -f, --full             install the full dependencies (ladspa, youtube-dl, nodejs,...)
--n, --nox              build emacs without X support (for console based environment)
 -h, --help             display this help 
+
+Additional options for Debian based distributions
+-e, --emacs            download and build emacs (by default with X support for graphical environment)
+-n, --nox              build emacs without X support (for console based environment)
 
 EXAMPLES
 # build emacspeak $PV
