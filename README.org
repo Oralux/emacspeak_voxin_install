@@ -1,16 +1,16 @@
 #+OPTIONS: \n:t
 This installer builds by default emacspeak 49.0 with espeak or voxin
-and works currently on Ubuntu 18.04.
+and works currently on Arch Linux or Debian based distributions.
 
-Voxin (>=1.00) is optional and available at:
+Voxin (>=2.00) is optional and available at:
 http://voxin.oralux.net
 
-This installer may also help to build:
-- another emacspeak archive,
-- emacs, emacs-nox or emacspeak from the sources in development (git HEAD).
+This installer may also help to build another emacspeak archive: stable release or currently developed sources (git HEAD).
+
+It can also build on Debian based distributions emacs or emacs-nox from the sources in development.
 See paragraph 'Usage' for more details.
 
-At the end of the build process, you will have to update your emacs or bash initfile.
+At the end of the build process, you will have to update your emacs or bash init file.
 The instructions are displayed on the console when the build is achieved and also copied at the end of the log file named log/install.xxx .
 
 For example, for retrieving these instructions in a console, type:
