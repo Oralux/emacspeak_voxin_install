@@ -1,5 +1,5 @@
 #!/bin/bash
-# 2016-2018, Gilles Casse <gcasse@oralux.org>
+# 2016-2019, Gilles Casse <gcasse@oralux.org>
 #
 
 cd "$(dirname "$0")" && BASE=$PWD
@@ -54,8 +54,8 @@ else
     echo "no"
 fi
 
-echo -n "Checking Voxin >= 1.00 : "
-$checkLibvoxin
+echo -n "Checking Voxin >= 2.0 : "
+$checkVoxin
 if [ "$?" = "0" ]; then
     voxinFound=1
     DTK="DTK_PROGRAM=outloud"

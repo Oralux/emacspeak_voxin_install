@@ -48,7 +48,7 @@ checkDistro()
     # # Check if this is an arch linux based distro
     # if [ -e "/etc/pacman.conf" ]; then
 	# checkEmacs=archCheckEmacs
-	# checkLibvoxin=archCheckLibvoxin
+	# checkVoxin=archCheckVoxin
 	# checkEspeak=archCheckEspeak
 	# getDep=archInstallDep
 	# status=0
@@ -57,7 +57,7 @@ checkDistro()
 	type dpkg &> /dev/null
 	if [ "$?" = "0" ]; then
 	    checkEmacs=debianCheckEmacs
-	    checkLibvoxin=debianCheckLibvoxin
+	    checkVoxin=debianCheckVoxin
 	    checkEspeak=debianCheckEspeak
 	    getDep=debianGetDep
 	    status=0
@@ -75,8 +75,8 @@ archCheckEmacs() {
     (pacman -Q emacs || pacman -Q emacs-nox) &> /dev/null
 }
 
-archCheckLibvoxin() {
-    pacman -Q libvoxin &> /dev/null    
+archCheckVoxin() {
+    pacman -Q voxin &> /dev/null    
 }
 
 archCheckEspeak() {
@@ -107,8 +107,8 @@ debianCheckEmacs() {
     dpkg -l | grep " emacs" &> /dev/null    
 }
 
-debianCheckLibvoxin() {
-    dpkg -l | grep libvoxin &> /dev/null    
+debianCheckVoxin() {
+    dpkg -l | grep voxin &> /dev/null    
 }
 
 debianCheckEspeak() {
