@@ -17,7 +17,7 @@ DEP=$workDir/dep.txt
 LIST_EMACSPEAK_MUST="alsa-utils libasound2-plugins libasound2-dev libespeak-dev libsox-fmt-mp3 sox tcl8.6-dev tclx8.4 libxml2-dev"
 LIST_EMACSPEAK_NICE="curl fil-plugins graphicsmagick-imagemagick-compat invada-studio-plugins-ladspa ladspa-foo-plugins ladspa-sdk liquidsoap-plugin-ladspa mcp-plugins mplayer nodejs phantomjs pianobar rev-plugins sqlite3 swh-plugins tap-plugins unzip vco-plugins wah-plugins wget xbacklight youtube-dl zam-plugins"
 
-LIST_EMACSPEAK_MUST_ARCH_LINUX="texinfo alsa-utils alsa-plugins alsa-lib espeak-ng sox tcl tk libxml2"
+LIST_EMACSPEAK_MUST_ARCH_LINUX="texinfo alsa-utils alsa-plugins alsa-lib espeak sox tcl tk libxml2"
 LIST_EMACSPEAK_NICE_ARCH_LINUX="curl fil-plugins ladspa-plugins ladspa mcp-plugins mplayer nodejs pianobar rev-plugins sqlite3 swh-plugins tap-plugins unzip vco-plugins wah-plugins wget xbacklight youtube-dl zam-plugins"
 
 ###
@@ -79,7 +79,7 @@ archCheckVoxin() {
 }
 
 archCheckEspeak() {
-    pacman -Q espeak || pacman -Q espeak-ng &> /dev/null    
+    pacman -Q espeak &> /dev/null    
 }
 
 archGetDep() {
@@ -101,7 +101,7 @@ archGetDep() {
     fi
     
     if [ "$espeakFound" = "0" ] && [ "$voxinFound" = "0" ]; then
-	list="$list espeak-ng"
+	list="$list espeak"
     fi
 
     list="$list base-devel wget texinfo"    
@@ -167,7 +167,7 @@ debianGetDep() {
 	
 	if [ "$espeakFound" = "0" ] && [ "$voxinFound" = "0" ]; then
 		x=espeak
-		debianDoesPackageExist espeak-ng && x=espeak-ng
+		debianDoesPackageExist espeak && x=espeak
 		list="$list $x"
 	fi
 
