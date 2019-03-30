@@ -104,7 +104,7 @@ archGetDep() {
 	list="$list espeak"
     fi
 
-    list="$list base-devel wget texinfo"    
+    list="$list make gcc binutils wget texinfo"    
 
     if [ "$emacspeakRelease" = "latest" ]; then
 	list="$list git"
