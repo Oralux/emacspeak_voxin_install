@@ -192,7 +192,7 @@ You would have to uncomment the deb-src lines in your
 			exit 1
 		fi		
 		list="$list $(apt-get -s build-dep emacs${emacsVersion}${x} | grep "^  [^ ]")"
-		list="$list $(apt-cache depends emacs${emacsVersion}${x} | awk '/Depends/{print $2}')"
+		debianIsPackageInstalled emacs${emacsVersion}${x} || list="$list emacs${emacsVersion}${x}"
 	fi
 
 	# find which "must have" dependency is not yet installed
