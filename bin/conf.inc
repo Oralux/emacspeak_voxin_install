@@ -14,7 +14,7 @@ logDir=$BASE/log
 SERVER=outloud
 LOG=$logDir/install.$(date -Iseconds)
 DEP=$workDir/dep.txt
-LIST_EMACSPEAK_MUST="alsa-utils libasound2-plugins libasound2-dev libespeak-dev libsox-fmt-mp3 sox tcl8.6-dev tclx8.4 libxml2-dev"
+LIST_EMACSPEAK_MUST="alsa-utils libasound2-plugins libasound2-dev libespeak-dev libsox-fmt-mp3 sox tcl8.6-dev tclx8.4 libxml2-dev g++"
 LIST_EMACSPEAK_NICE="curl fil-plugins graphicsmagick-imagemagick-compat invada-studio-plugins-ladspa ladspa-foo-plugins ladspa-sdk liquidsoap-plugin-ladspa mcp-plugins mplayer nodejs phantomjs pianobar rev-plugins sqlite3 swh-plugins tap-plugins unzip vco-plugins wah-plugins wget xbacklight youtube-dl zam-plugins"
 
 LIST_EMACSPEAK_MUST_ARCH_LINUX="texinfo alsa-utils alsa-plugins alsa-lib espeak sox tcl tk libxml2"
