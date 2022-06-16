@@ -1,8 +1,8 @@
 #+OPTIONS: \n:t
-This installer builds by default emacspeak 49.0 with espeak or voxin
+This installer builds by default emacspeak 55.0 with espeak or voxin
 and works currently on Arch Linux or Debian based distributions.
 
-Voxin (>=2.00) is optional and available at:
+Voxin (>=3.00) is optional and available at:
 http://voxin.oralux.net
 
 This installer may also help to build another emacspeak archive: stable release or currently developed sources (git HEAD).
@@ -15,21 +15,21 @@ The instructions are displayed on the console when the build is achieved and als
 
 For example, for retrieving these instructions in a console, type:
 
-# tail emacspeak_voxin_install-49.0-5/log/install.*
+# tail emacspeak_voxin_install-55.0-5/log/install.*
 
 Then this kind of text should be displayed:
 
 # Configuration
 # Add this alias to ~/.bashrc:
-alias emacs="/home/user1/emacspeak_voxin_install-49.0-5/build/install/bin/emacs"
+alias emacs="/home/user1/emacspeak_voxin_install-55.0/build/install/bin/emacs"
 # Add these lines to the top of your emacs init file (e.g. in  ~/.emacs )
 (setenv "DTK_PROGRAM" "outloud")
 (load-file "/lisp/emacspeak-setup.el")
 # Now you may want to reboot, before launching emacs
 # These instructions are copied at the end of log/install.*
 
-* Build emacspeak 49.0
-To download and build emacspeak 49.0, just type as a non-root user in
+* Build emacspeak 55.0
+To download and build emacspeak 55.0, just type as a non-root user in
 a terminal:
 ./install.sh
 
@@ -51,7 +51,7 @@ For example, if you have installed emacspeak_voxin_install in the
 /home/user1 directory, the instruction to add at the beginning of your
 emacs init file is:
 
-(load-file "/home/user1/emacspeak_voxin_install/build/emacspeak-49.0/lisp/emacspeak-setup.el")
+(load-file "/home/user1/emacspeak_voxin_install/build/emacspeak-55.0/lisp/emacspeak-setup.el")
 
 Then emacspeak will use espeak by default.
 
@@ -60,7 +60,7 @@ outloud before calling load-file:
 
 #+BEGIN_EXAMPLE
 (setenv "DTK_PROGRAM" "outloud")
-(load-file "/home/user1/emacspeak_voxin_install/build/emacspeak-49.0/lisp/emacspeak-setup.el")
+(load-file "/home/user1/emacspeak_voxin_install/build/emacspeak-55.0/lisp/emacspeak-setup.el")
 #+END_EXAMPLE
 
 * alias to launch your locally build emacs
@@ -82,7 +82,7 @@ The following information are copied from:
 
 
 This installer builds emacspeak with espeak or voxin.
-By default, the emacspeak 49.0 archive is downloaded. 
+By default, the emacspeak 55.0 archive is downloaded. 
 But another emacspeak release or even its latest sources from GitHub
 can be selected.
 
@@ -93,24 +93,24 @@ downloaded and built with or without X support.
 
 OPTIONS
 -c, --clean            clean all: delete the build, install directories and log file
--r, --release=version  download the indicated version (e.g. '49.0' or 'latest' for the developer version).
+-r, --release=version  download the indicated version (e.g. '55.0' or 'latest' for the developer version).
 -e, --emacs            download and build emacs (by default with X support for graphical environment)
 -f, --full             install the full dependencies (ladspa, youtube-dl, nodejs,...)
 -n, --nox              build emacs without X support (for console based environment)
 -h, --help             display this help 
 
 EXAMPLES
-# build emacspeak 49.0
+# build emacspeak 55.0
  ./install.sh
 
-# build emacspeak 49.0 and emacs (with X)
+# build emacspeak 55.0 and emacs (with X)
  ./install.sh --emacs
 
-# build emacspeak 49.0 and emacs (without X)
+# build emacspeak 55.0 and emacs (without X)
  ./install.sh --nox
 
-# build emacspeak 48.0
- ./install.sh --release 48.0
+# build emacspeak 53.0
+ ./install.sh --release 53.0
 
 # build emacspeak from the currently developed sources (git HEAD)
  ./install.sh --release latest

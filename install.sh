@@ -1,5 +1,5 @@
 #!/bin/bash
-# 2016-2019, Gilles Casse <gcasse@oralux.org>
+# 2016-2022, Gilles Casse <gcasse@oralux.org>
 #
 
 cd "$(dirname "$0")" && BASE=$PWD

@@ -3,8 +3,8 @@
 PN=emacspeak_voxin_install
 
 # PV: default emacspeak version 
-PV=49.0
-REL=5
+PV=55.0
+REL=1
 GIT_EMACSPEAK_URL=https://github.com/tvraman/emacspeak.git
 GIT_EMACS_URL=https://github.com/mirrors/emacs.git
 archivesDir=$BASE/archives
@@ -75,7 +75,7 @@ archCheckEmacs() {
 }
 
 archCheckVoxin() {
-    pacman -Q voxin &> /dev/null    
+    pacman -Q voxin &> /dev/null
 }
 
 archCheckEspeak() {
@@ -233,7 +233,7 @@ HEAD) can be downloaded and built with or without X support.
 
 OPTIONS
 -c, --clean            clean all: delete the build, install directories and log file
--r, --release=version  download the indicated version (e.g. '49.0' or 'latest' for the developer version).
+-r, --release=version  download the indicated version (e.g. '53.0' or 'latest' for the developer version).
 -f, --full             install the full dependencies (ladspa, youtube-dl, nodejs,...)
 -h, --help             display this help 
 
@@ -251,8 +251,8 @@ EXAMPLES
 # build emacspeak $PV and emacs (without X)
  $0 --nox
 
-# build emacspeak 48.0
- $0 --release 48.0
+# build emacspeak 53.0
+ $0 --release 53.0
 
 # build emacspeak from the currently developed sources (git HEAD)
  $0 --release latest
