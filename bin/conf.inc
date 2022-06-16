@@ -3,21 +3,22 @@
 PN=emacspeak_voxin_install
 
 # PV: default emacspeak version 
-PV=55.0
+PV=56.0
 REL=1
 GIT_EMACSPEAK_URL=https://github.com/tvraman/emacspeak.git
 GIT_EMACS_URL=https://github.com/mirrors/emacs.git
 archivesDir=$BASE/archives
 workDir=$BASE/build
 installDir=$workDir/install
+patchDir=$workDir/patch
 logDir=$BASE/log
 SERVER=outloud
 LOG=$logDir/install.$(date -Iseconds)
 DEP=$workDir/dep.txt
-LIST_EMACSPEAK_MUST="alsa-utils libasound2-plugins libasound2-dev libespeak-dev libsox-fmt-mp3 sox tcl8.6-dev tclx8.4 libxml2-dev g++"
+LIST_EMACSPEAK_MUST="alsa-utils libasound2-plugins libasound2-dev libespeak-ng-dev libsox-fmt-mp3 sox tcl8.6-dev tclx8.4 libxml2-dev g++ libspeechd-dev"
 LIST_EMACSPEAK_NICE="curl fil-plugins graphicsmagick-imagemagick-compat invada-studio-plugins-ladspa ladspa-foo-plugins ladspa-sdk liquidsoap-plugin-ladspa mcp-plugins mplayer nodejs phantomjs pianobar rev-plugins sqlite3 swh-plugins tap-plugins unzip vco-plugins wah-plugins wget xbacklight youtube-dl zam-plugins"
 
-LIST_EMACSPEAK_MUST_ARCH_LINUX="texinfo alsa-utils alsa-plugins alsa-lib espeak sox tcl tk libxml2"
+LIST_EMACSPEAK_MUST_ARCH_LINUX="texinfo alsa-utils alsa-plugins alsa-lib espeak-ng sox tcl tk libxml2 libspeechd"
 LIST_EMACSPEAK_NICE_ARCH_LINUX="curl fil-plugins ladspa-plugins ladspa mcp-plugins mplayer nodejs pianobar rev-plugins sqlite3 swh-plugins tap-plugins unzip vco-plugins wah-plugins wget xbacklight youtube-dl zam-plugins"
 
 ###
@@ -79,7 +80,7 @@ archCheckVoxin() {
 }
 
 archCheckEspeak() {
-    pacman -Q espeak &> /dev/null    
+    pacman -Q espeak-ng &> /dev/null    
 }
 
 archGetDep() {
@@ -88,7 +89,8 @@ archGetDep() {
     local emacspeakRelease=$3
     local espeakFound=$4
     local voxinFound=$5
-    local full=$6    
+    local speechdFound=$6
+    local full=$7
     local list="$LIST_EMACSPEAK_MUST_ARCH_LINUX"
     local x
     local y
@@ -100,8 +102,8 @@ archGetDep() {
 	list="$list $LIST_EMACSPEAK_NICE_ARCH_LINUX"
     fi
     
-    if [ "$espeakFound" = "0" ] && [ "$voxinFound" = "0" ]; then
-	list="$list espeak"
+    if [ "$espeakFound" = "0" ] && [ "$voxinFound" = "0" ] && [ "$speechdFound" = "0" ]; then
+	list="$list espeak-ng"
     fi
 
     list="$list make gcc binutils wget texinfo"    
@@ -137,7 +139,11 @@ debianCheckVoxin() {
 }
 
 debianCheckEspeak() {
-    dpkg -l | grep libespeak &> /dev/null    
+    dpkg -l | grep libespeak-ng &> /dev/null
+}
+
+debianCheckSpeechd() {
+    dpkg -l | grep libspeechd &> /dev/null
 }
 
 debianIsPackageInstalled() {
@@ -156,7 +162,8 @@ debianGetDep() {
 	local emacspeakRelease=$3
 	local espeakFound=$4
 	local voxinFound=$5
-	local full=$6
+	local speechdFound=$6
+	local full=$7
 	
 	local list="$LIST_EMACSPEAK_MUST"
 	local x
@@ -165,9 +172,9 @@ debianGetDep() {
 
 	unlink "$DEP" &> /dev/null
 	
-	if [ "$espeakFound" = "0" ] && [ "$voxinFound" = "0" ]; then
-		x=espeak
-		debianDoesPackageExist espeak && x=espeak
+	if [ "$espeakFound" = "0" ] && [ "$voxinFound" = "0" ] && [ "$speechdFound" = "0" ]; then
+		unset x
+		debianDoesPackageExist espeak-ng && x=espeak-ng
 		list="$list $x"
 	fi
 
@@ -223,7 +230,7 @@ usage() {
 Usage: 
  $NAME [options]
 
-This installer builds emacspeak with espeak or voxin.
+This installer builds emacspeak with espeak-ng or voxin.
 By default, the emacspeak $PV archive is downloaded. 
 Another emacspeak release or even its latest sources from GitHub can
 be selected.
@@ -365,6 +372,9 @@ buildEmacspeak() {
 	fi
 	if [ "$espeakFound" = "1" ]; then
 		make espeak | tee -a "$LOG"
+	fi
+	if [ "$speechdFound" = "1" ]; then
+		make speechd | tee -a "$LOG"
 	fi
 	
 	chmod -R ugo+rX .

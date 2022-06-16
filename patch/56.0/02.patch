@@ -1,0 +1,10 @@
+--- a/servers/.servers	2022-04-18 22:56:41.000000000 +0200
++++ b/servers/.servers	2022-06-16 16:50:39.007463918 +0200
+@@ -12,5 +12,6 @@
+ log-plain
+ mac
+ outloud
++speechd
+ ssh-dtk-exp
+ ssh-outloud
+ 

@@ -1,0 +1,9 @@
+--- a/lisp/dtk-speak.el	2022-04-30 03:39:38.000000000 +0200
++++ b/lisp/dtk-speak.el	2022-06-16 16:34:09.335488923 +0200
+@@ -74,6 +74,7 @@
+ dtk-exp     For the Dectalk Express.
+ outloud     For IBM ViaVoice Outloud
+ espeak      For eSpeak (default on Linux)
++speechd     For speech-dispatcher
+ mac for MAC TTS (default on Mac)")
+ ;;}}}

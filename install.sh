@@ -24,6 +24,29 @@ OPTIONS=`getopt -o cefhnr: --long clean,emacs,full,help,nox,release: \
 [ $? != 0 ] && usage && exit 1
 eval set -- "$OPTIONS"
 
+# apply new pull request #67 (basic speech-dispatcher server) for
+# release = 56.0
+applyPatch() {
+    local installDir=$1
+    local dir=$PWD
+
+    if [ "$EMACSPEAK_RELEASE" = "56.0" ]; then
+	mkdir -p "$patchDir"
+	cp "$BASE"/patch/56.0/*.patch "$patchDir"/
+
+	cd "$patchDir"
+	if [ ! -e "67.patch" ]; then
+	    wget https://github.com/tvraman/emacspeak/pull/67.patch
+	fi
+	for p in *patch; do
+	    patch --dry-run -d "$installDir" -fp1 < "$p" >/dev/null
+	    [ $? = 0 ] && patch -d "$installDir" -fp1 < "$p"
+	done
+    fi
+
+    cd "$dir"
+}
+
 while true; do
   case "$1" in
     -c|--clean) CLEAN=1; shift;;
@@ -43,6 +66,7 @@ checkDistro || leave "Sorry, this distribution is not yet supported. For support
 
 voxinFound=0
 espeakFound=0
+speechdFound=0
 unset DTK
 
 echo -n "Checking eSpeak : "
@@ -64,14 +88,24 @@ else
     echo "no"
 fi
 
+echo -n "Checking Speech-Dispatcher: "
+$checkSpeechd
+if [ "$?" = "0" ]; then
+    speechdFound=1
+    DTK="DTK_PROGRAM=speechd"
+    echo "yes"
+else    
+    echo "no"
+fi
+
 [ "$CLEAN" = 1 ] && clean
 
 #[ "$voxinFound" = "0" ] && [ "$espeakFound" = "0" ] && leave "Install voxin or espeak before running this script." 0
 
 trap quit ERR
 
-$getDep $EMACS $WITH_X "$EMACSPEAK_RELEASE" "$espeakFound" "$voxinFound" "$FULL"
-[ -e "$DEP" ] && leave "There are missing dependencies. Please run as superuser:\n bin/installDep.sh\nThe missing dependencies are listed in build/dep.txt" 0  
+$getDep $EMACS $WITH_X "$EMACSPEAK_RELEASE" "$espeakFound" "$voxinFound" "$speechdFound" "$FULL"
+[ -e "$DEP" ] && leave "There are missing dependencies. Please run as superuser:\n bin/installDep.sh\nThe missing dependencies are listed in build/dep.txt" 0
 
 msg "Initialization; please wait... "
 msg "Log file: $LOG"
@@ -99,6 +133,9 @@ export PATH=$BASE/build/install/bin:$PATH
 
 msg "Building emacspeak... "
 emacspeakDir="$workDir/emacspeak-$EMACSPEAK_RELEASE"
+
+applyPatch "$emacspeakDir"
+
 buildEmacspeak "$emacspeakDir"
 
 

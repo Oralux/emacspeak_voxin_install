@@ -1,0 +1,12 @@
+--- a/Makefile	2022-04-22 22:36:46.000000000 +0200
++++ b/Makefile	2022-06-16 17:47:58.191483487 +0200
+@@ -58,6 +58,9 @@
+ espeak: 
+ 	@cd servers/native-espeak && $(MAKE) --no-print-directory  || echo "Can't build espeak server!"
+ 
++speechd: 
++	@cd servers/native-speechd && $(MAKE) --no-print-directory  || echo "Can't build speechd server!"
++
+ # }}}
+ # {{{  Maintenance targets   dist
+ 
