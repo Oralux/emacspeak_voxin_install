@@ -168,7 +168,7 @@ debianGetDep() {
 	local list="$LIST_EMACSPEAK_MUST"
 	local x
 	local y
-	local emacsVersion=$(apt-cache pkgnames | grep -E "^emacs[0-9]+$" | sed 's/emacs//' | sort -n | tail -1 )		
+	local emacsVersion # deprecated (test on Debian 12)
 
 	unlink "$DEP" &> /dev/null
 	
